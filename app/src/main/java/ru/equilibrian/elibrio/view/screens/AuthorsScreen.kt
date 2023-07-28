@@ -1,4 +1,4 @@
-package ru.equilibrian.elibrio
+package ru.equilibrian.elibrio.view.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,16 +10,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import ru.equilibrian.elibrio.ui.theme.ELibrioTheme
 
 @Composable
-fun HubScreen() {
+fun AuthorsScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        Text(text = "Hub screen in development...", modifier = Modifier.align(Alignment.Center))
+        Text(text = "Authors screen in development...", modifier = Modifier.align(Alignment.Center))
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun HubScreenPreview() {
+fun AuthorsScreenPreview() {
     ELibrioTheme {
-        HubScreen()
+        AuthorsScreen()
     }
 }
