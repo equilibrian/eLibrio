@@ -43,6 +43,9 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -54,6 +57,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,19 +90,31 @@ val LIBRARY_FILTERS = listOf(
     LibraryFilter.ReadLater
 )
 
+/**
+ * Composable function representing the AppBar component.
+ *
+ * This function creates a top app bar with options to modify the view mode
+ * and perform other actions.
+ *
+ * @param currentViewMode A [MutableState] holding the current view mode ([ViewMode.GRID]
+ * or [ViewMode.LIST]) as the state that can be modified in the composition.
+ * @param scrollBehavior The scrolling behavior that determines how the app bar should behave
+ * when the content is scrolled.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(currentViewMode: MutableState<ViewMode>, scrollBehavior: TopAppBarScrollBehavior) {
-    var isChecked by remember { mutableStateOf(false) }
+    var isChecked by rememberSaveable { mutableStateOf(false) }
     val viewListIcon = painterResource(id = R.drawable.sort_list)
     val viewGridIcon = painterResource(id = R.drawable.dashdoard_outlined)
+
     TopAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
         title = {
             Text(text = "Library", color = MaterialTheme.colorScheme.onBackground)
         },
         actions = {
-            Row(modifier = Modifier.padding(end = 16.dp)) {
+            Row {
                 IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(R.drawable.add_round),
@@ -135,6 +151,16 @@ fun AppBar(currentViewMode: MutableState<ViewMode>, scrollBehavior: TopAppBarScr
     )
 }
 
+/**
+ * Composable function representing a filter selection row.
+ *
+ * This function displays a row of filter options using Jetpack Compose's LazyRow.
+ *
+ * A list of [LibraryFilter] items to be displayed. Each filter item
+ * should have a name to be shown on the chip.
+ *
+ * @sample LIBRARY_FILTERS
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Filters() {
@@ -188,14 +214,14 @@ fun LibraryGridItem(title: String, poster: Painter? = null) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LibraryContentGridView(state: LazyStaggeredGridState, content: List<Pair<String, Painter>>) {
+fun LibraryContentGridView(state: LazyStaggeredGridState, content: List<Pair<String, Painter>>?) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(128.dp),
         state = state,
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        content.forEach { book ->
+        content?.forEach { book ->
             item { LibraryGridItem(book.first, book.second) }
         }
         
@@ -220,6 +246,7 @@ fun LibraryScreen(modifier: Modifier = Modifier, viewModel: LibraryScreenViewMod
     val currentViewMode = remember { mutableStateOf(ViewMode.GRID) }
     val contentGridState = rememberLazyStaggeredGridState()
     val contentListState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -237,8 +264,15 @@ fun LibraryScreen(modifier: Modifier = Modifier, viewModel: LibraryScreenViewMod
     }
 
     Scaffold(
-        modifier = modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { AppBar(currentViewMode, scrollBehavior) },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(snackbarData = data)
+            }
+        },
         floatingActionButton = {
             val isFabVisible = viewModel::isFabVisible
             FAB(isFabVisible.get()) {
@@ -261,10 +295,10 @@ fun LibraryScreen(modifier: Modifier = Modifier, viewModel: LibraryScreenViewMod
             ) {
                 Filters()
 
-                if (true) {
+                if (viewModel.books != null) {
                     Crossfade(targetState = currentViewMode.value, label = "") { mode ->
                         when (mode) {
-                            ViewMode.GRID -> LibraryContentGridView(contentGridState, listOf())
+                            ViewMode.GRID -> LibraryContentGridView(contentGridState, viewModel.books.value)
                             ViewMode.LIST -> LibraryContentListView(contentListState)
                         }
                     }
@@ -273,7 +307,7 @@ fun LibraryScreen(modifier: Modifier = Modifier, viewModel: LibraryScreenViewMod
                         TextButton(
                             onClick = {
                                 scope.launch {
-
+                                    snackbarHostState.showSnackbar("Coming soon...")
                                 }
                             },
                             modifier = Modifier.align(Alignment.Center),
