@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">E-Librio</string>
+    <string name="app_name">E-Librio</string>
     <string name="collection_screen_title">Коллекция</string>
     <string name="authors_screen_title">Авторы</string>
     <string name="settings_screen_title">Настройки</string>

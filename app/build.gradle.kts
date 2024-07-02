@@ -3,6 +3,20 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
+val major = 0
+val minor = 1
+val patch = 0
+
+val latestCommitId: String = try {
+    val process = ProcessBuilder("git", "rev-parse", "HEAD")
+        .start()
+    process.waitFor(5, TimeUnit.SECONDS)
+    val fullCommitId = process.inputStream.bufferedReader().readText().trim()
+    fullCommitId.substring(0, 7)
+} catch (e: Exception) {
+    "Failed to fetch commit id"
+}
+
 android {
     namespace = "su.elibrio.mobile"
     compileSdk = 34
@@ -11,8 +25,8 @@ android {
         applicationId = "su.elibrio.mobile"
         minSdk = 29
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = major * 1000 + minor * 100 + patch
+        versionName = "$major.$minor.$patch ($latestCommitId)"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -59,6 +73,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

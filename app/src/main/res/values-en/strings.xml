@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">E-Librio</string>
+    <string name="collection_screen_title">Collection</string>
+    <string name="authors_screen_title">Authors</string>
+    <string name="settings_screen_title">Settings</string>
+    <string name="nothing_to_show">Collection is empty</string>
+    <string name="st_import">Import</string>
+</resources>
