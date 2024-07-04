@@ -2,6 +2,7 @@
 .gradle
 .idea
 release
+debug
 *.apk
 /local.properties
 /.idea/caches

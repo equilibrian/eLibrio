@@ -6,15 +6,15 @@ plugins {
 val major = 0
 val minor = 1
 val patch = 0
+val version = "$major.$minor.$patch"
 
-val latestCommitId: String = try {
-    val process = ProcessBuilder("git", "rev-parse", "HEAD")
+val latestCommitId: Int = try {
+    val process = ProcessBuilder("git", "rev-list", "--count", "HEAD")
         .start()
     process.waitFor(5, TimeUnit.SECONDS)
-    val fullCommitId = process.inputStream.bufferedReader().readText().trim()
-    fullCommitId.substring(0, 7)
+    process.inputStream.bufferedReader().readText().trim().toInt()
 } catch (e: Exception) {
-    "Failed to fetch commit id"
+    0 // Default to 0 if commit count fetch fails
 }
 
 android {
@@ -26,7 +26,7 @@ android {
         minSdk = 29
         targetSdk = 34
         versionCode = major * 1000 + minor * 100 + patch
-        versionName = "$major.$minor.$patch ($latestCommitId)"
+        versionName = "$version ($latestCommitId)"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -41,6 +41,26 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            applicationVariants.all {
+                val variant = this
+                variant.outputs
+                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+                    .forEach { output ->
+                        val outputFileName = "eLibrio-${version}-release.apk"
+                        output.outputFileName = outputFileName
+                    }
+            }
+        }
+        debug {
+            applicationVariants.all {
+                val variant = this
+                variant.outputs
+                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+                    .forEach { output ->
+                        val outputFileName = "eLibrio-${version}-debug.apk"
+                        output.outputFileName = outputFileName
+                    }
+            }
         }
     }
     compileOptions {
@@ -64,9 +84,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.accompanist.permissions)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -74,6 +96,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

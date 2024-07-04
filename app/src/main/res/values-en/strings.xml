@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">E-Librio</string>
-    <string name="collection_screen_title">Collection</string>
+    <string name="library_screen_title">Library</string>
     <string name="authors_screen_title">Authors</string>
     <string name="settings_screen_title">Settings</string>
     <string name="nothing_to_show">Collection is empty</string>
     <string name="st_import">Import</string>
+    <string name="st_dialog_storage_access_needed_title">Grant access to the storage</string>
+    <string name="st_dialog_storage_access_needed_body">To allow the application to open books and documents, it is necessary to grant access to the files on the device.</string>
+    <string name="st_cancel">Cancel</string>
+    <string name="st_continue">Continue</string>
+    <string name="st_filter_all">All</string>
+    <string name="st_filter_recent">Recent</string>
+    <string name="st_filter_favourites">Favourites</string>
 </resources>

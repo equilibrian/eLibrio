@@ -1,8 +1,18 @@
 <resources>
     <string name="app_name" translatable="false">E-Librio</string>
-    <string name="collection_screen_title">Коллекция</string>
+    <string name="library_screen_title">Библиотека</string>
     <string name="authors_screen_title">Авторы</string>
     <string name="settings_screen_title">Настройки</string>
     <string name="nothing_to_show">Тут ничего нет…</string>
     <string name="st_import">Импорт</string>
+    <string name="st_lang_ru" translatable="false">Русский</string>
+    <string name="st_lang_en" translatable="false">English</string>
+    <string name="st_dialog_storage_access_needed_title">Предоставьте доступ к хранилищу</string>
+    <string name="st_dialog_storage_access_needed_body">Чтобы приложение могло открывать книги и документы, необходимо разрешить доступ к файлам на устройстве.</string>
+    <string name="st_ok" translatable="false">ОК</string>
+    <string name="st_cancel">Отмена</string>
+    <string name="st_continue">Продолжить</string>
+    <string name="st_filter_all">Все</string>
+    <string name="st_filter_recent">Недавние</string>
+    <string name="st_filter_favourites">Избранные</string>
 </resources>
