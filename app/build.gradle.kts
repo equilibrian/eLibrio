@@ -3,19 +3,22 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
-val major = 0
-val minor = 1
-val patch = 0
-val version = "$major.$minor.$patch"
+enum class Stage(private val suffix: String) {
+    ALPHA("-alpha"),
+    BETA("-beta"),
+    RELEASE("");
 
-val latestCommitId: Int = try {
-    val process = ProcessBuilder("git", "rev-list", "--count", "HEAD")
-        .start()
-    process.waitFor(5, TimeUnit.SECONDS)
-    process.inputStream.bufferedReader().readText().trim().toInt()
-} catch (e: Exception) {
-    0 // Default to 0 if commit count fetch fails
+    override fun toString(): String {
+        return suffix
+    }
 }
+
+val major = 0
+val minor = 2
+val patch = 0
+val stage = Stage.ALPHA
+
+val version = "$major.$minor.$patch$stage"
 
 android {
     namespace = "su.elibrio.mobile"
@@ -26,7 +29,7 @@ android {
         minSdk = 29
         targetSdk = 34
         versionCode = major * 1000 + minor * 100 + patch
-        versionName = "$version ($latestCommitId)"
+        versionName = version
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -71,6 +74,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {

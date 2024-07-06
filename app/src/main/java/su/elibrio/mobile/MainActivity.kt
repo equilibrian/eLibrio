@@ -1,25 +1,36 @@
 package su.elibrio.mobile
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,8 +54,9 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import su.elibrio.mobile.model.MainActivityScreens
 import su.elibrio.mobile.ui.theme.ELibrioTheme
+import su.elibrio.mobile.util.MAIN_ACTIVITY_SCREENS
 import su.elibrio.mobile.view.screen.AuthorsScreen
-import su.elibrio.mobile.view.screen.CollectionScreen
+import su.elibrio.mobile.view.screen.LibraryScreen
 import su.elibrio.mobile.view.screen.SettingsScreen
 
 class MainActivity : ComponentActivity() {
@@ -58,35 +71,54 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-val MAIN_ACTIVITY_SCREENS = listOf(
-    MainActivityScreens.Library,
-    MainActivityScreens.Authors,
-    MainActivityScreens.Settings
-)
-
 @Composable
-fun AlertDialogPermissionsNeeded(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-) {
-    AlertDialog(
-        title = { Text(text = stringResource(R.string.st_dialog_storage_access_needed_title)) },
-        text = { Text(text = stringResource(R.string.st_dialog_storage_access_needed_body)) },
-        onDismissRequest = { onDismissRequest() },
-        confirmButton = {
-            TextButton(onClick = { onConfirmation() }) {
-                Text(text = stringResource(R.string.st_continue))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { onDismissRequest() }) {
-                Text(text = stringResource(R.string.st_cancel))
+fun AppBarActions(currentScreen: MainActivityScreens, ctx: Context) {
+    Row {
+        AnimatedVisibility(visible = currentScreen != MainActivityScreens.Settings) {
+            IconButton(onClick = {
+                Toast.makeText(ctx, "Поиск пока не работает", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.search_icon),
+                    contentDescription = "icon"
+                )
             }
         }
+
+        AnimatedVisibility(
+            visible = currentScreen != MainActivityScreens.Authors
+                    && currentScreen != MainActivityScreens.Settings
+        ) {
+            IconButton(onClick = {
+                Toast.makeText(ctx, "Импорт пока не работает", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(painter = painterResource(R.drawable.add_icon), contentDescription = "")
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBar(scrollBehavior: TopAppBarScrollBehavior, currentScreen: MainActivityScreens) {
+    val ctx = LocalContext.current
+
+    TopAppBar(
+        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
+        title = {
+            Crossfade(targetState = currentScreen.titleStrId, label = "") { titleId ->
+                Text(
+                    text = stringResource(id = titleId),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        },
+        actions = { AppBarActions(currentScreen = currentScreen, ctx = ctx) },
+        scrollBehavior = scrollBehavior
     )
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
     val openAlertDialog = remember { mutableStateOf(false) }
@@ -95,20 +127,38 @@ fun MainScreen(modifier: Modifier = Modifier) {
     )
 
     val ctx = LocalContext.current
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val navController = rememberNavController()
+    var currentScreen by remember {
+        mutableStateOf<MainActivityScreens?>(MainActivityScreens.Library)
+    }
 
     Scaffold(modifier = modifier.fillMaxSize(),
+        topBar = { AppBar(scrollBehavior, currentScreen!!) },
         content =  { innerPaddings ->
             Box(modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = innerPaddings.calculateBottomPadding())) {
+                .padding(
+                    top = innerPaddings.calculateTopPadding(),
+                    bottom = innerPaddings.calculateBottomPadding()
+                )
+            ) {
                 NavHost(
                     navController = navController,
                     startDestination = MainActivityScreens.Library.route
                 ) {
-                    composable(MainActivityScreens.Library.route) { CollectionScreen() }
-                    composable(MainActivityScreens.Authors.route) { AuthorsScreen() }
-                    composable(MainActivityScreens.Settings.route) { SettingsScreen() }
+                    composable(MainActivityScreens.Library.route) {
+                        LibraryScreen()
+                        currentScreen = MainActivityScreens.Library
+                    }
+                    composable(MainActivityScreens.Authors.route) {
+                        AuthorsScreen()
+                        currentScreen = MainActivityScreens.Authors
+                    }
+                    composable(MainActivityScreens.Settings.route) {
+                        SettingsScreen()
+                        currentScreen = MainActivityScreens.Settings
+                    }
                 }
             }
         },
@@ -123,20 +173,29 @@ fun MainScreen(modifier: Modifier = Modifier) {
     }
 
     if (openAlertDialog.value) {
-        AlertDialogPermissionsNeeded(
+        AlertDialog(
+            title = { Text(text = stringResource(R.string.st_dialog_storage_access_needed_title)) },
+            text = { Text(text = stringResource(R.string.st_dialog_storage_access_needed_body)) },
             onDismissRequest = { openAlertDialog.value = false },
-            onConfirmation = {
-                openAlertDialog.value = false
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                    val uri = Uri.parse("package:su.elibrio.mobile")
-                    val intent = Intent(
-                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                        uri
-                    )
+            confirmButton = {
+                TextButton(onClick = {
+                    openAlertDialog.value = false
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                        val uri = Uri.parse("package:su.elibrio.mobile")
+                        val intent = Intent(
+                            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                            uri
+                        )
 
-                    startActivity(ctx, intent, null)
-                } else {
-                    externalStoragePermissionState.launchPermissionRequest()
+                        startActivity(ctx, intent, null)
+                    } else {
+                        externalStoragePermissionState.launchPermissionRequest()
+                    }
+                }) { Text(text = stringResource(R.string.st_continue)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { openAlertDialog.value = false }) {
+                    Text(text = stringResource(R.string.st_cancel))
                 }
             }
         )

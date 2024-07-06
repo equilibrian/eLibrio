@@ -12,4 +12,12 @@
     <string name="st_filter_all">Все</string>
     <string name="st_filter_recent">Недавние</string>
     <string name="st_filter_favourites">Избранные</string>
+    <string name="title_activity_about_app">Сведения</string>
+    <string name="st_scanning_files">Сканирование файлов</string>
+    <string name="st_backup">Резервное копирование</string>
+    <string name="st_about_app">Сведения</string>
+    <string name="st_category_general">Общие</string>
+    <string name="st_other">Другое</string>
+    <string name="st_version">Версия</string>
+    <string name="st_licenses">Лицензии</string>
 </resources>

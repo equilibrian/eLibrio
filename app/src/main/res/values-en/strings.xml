@@ -12,4 +12,12 @@
     <string name="st_filter_all">All</string>
     <string name="st_filter_recent">Recent</string>
     <string name="st_filter_favourites">Favourites</string>
+    <string name="title_activity_about_app">About app</string>
+    <string name="st_scanning_files">Scanning files</string>
+    <string name="st_backup">Backup</string>
+    <string name="st_about_app">About app</string>
+    <string name="st_category_general">General</string>
+    <string name="st_other">Other</string>
+    <string name="st_version">Version</string>
+    <string name="st_licenses">Licenses</string>
 </resources>

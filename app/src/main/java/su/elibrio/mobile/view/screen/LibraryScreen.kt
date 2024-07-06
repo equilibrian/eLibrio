@@ -5,25 +5,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,7 +26,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,63 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import su.elibrio.mobile.R
 import su.elibrio.mobile.model.Book
-import su.elibrio.mobile.model.LibraryFilter
-import su.elibrio.mobile.model.MainActivityScreens
 import su.elibrio.mobile.ui.theme.ELibrioTheme
+import su.elibrio.mobile.util.LIBRARY_FILTERS
 import su.elibrio.mobile.viewmodel.LibraryScreenViewModel
-
-val LIBRARY_FILTERS = listOf(
-    LibraryFilter.All,
-    LibraryFilter.Recent,
-    LibraryFilter.Favourites
-)
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppBar(scrollBehavior: TopAppBarScrollBehavior) {
-    val ctx = LocalContext.current
-
-    TopAppBar(
-        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
-        title = {
-            Text(
-                text = stringResource(id = MainActivityScreens.Library.titleStrId),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        },
-        actions = {
-            Row {
-                IconButton(onClick = {
-                    Toast.makeText(ctx, "Поиск пока не работает", Toast.LENGTH_SHORT).show()
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.search_icon),
-                        contentDescription = "icon"
-                    )
-                }
-
-                IconButton(onClick = {
-                    Toast.makeText(ctx, "Импорт пока не работает", Toast.LENGTH_SHORT).show()
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.add_icon),
-                        contentDescription = "icon"
-                    )
-                }
-            }
-        },
-        scrollBehavior = scrollBehavior
-    )
-}
 
 @Composable
 fun FiltersView() {
     var selectedFilter by remember { mutableIntStateOf(0) }
-    LazyRow(
-        contentPadding = PaddingValues(start = 16.dp),
+    Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        itemsIndexed(LIBRARY_FILTERS) { idx, filter ->
+        LIBRARY_FILTERS.forEachIndexed { idx, filter ->
             FilterChip(
                 selected = selectedFilter == idx,
                 onClick = { selectedFilter = idx },
@@ -158,40 +101,33 @@ fun CollectionView(modifier: Modifier = Modifier, files: List<Book>) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollectionScreen(
+fun LibraryScreen(
     modifier: Modifier = Modifier, lsViewModel: LibraryScreenViewModel = viewModel()
 ) {
     val ctx = LocalContext.current
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    Scaffold(modifier = modifier.fillMaxSize(),
-        topBar = { AppBar(scrollBehavior) },
-        content = { innerPaddings ->
-            Column(modifier = modifier
-                .fillMaxSize()
-                .padding(top = innerPaddings.calculateTopPadding()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                FiltersView()
-                if (lsViewModel.inProgress)
-                    LoadingView()
-                else if (lsViewModel.books == null || lsViewModel.books.value?.isEmpty() == true)
-                    EmptyCollectionView()
-                else {
-                    CollectionView(files = mutableListOf())
-                    Toast.makeText(ctx, "Показывать книги пока не умеем", Toast.LENGTH_SHORT).show()
-                }
-            }
+    Column(modifier = modifier
+        .fillMaxSize()
+        .padding(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        FiltersView()
+        if (lsViewModel.inProgress)
+            LoadingView()
+        else if (lsViewModel.books?.value == null || lsViewModel.books.value?.isEmpty() == true)
+            EmptyCollectionView()
+        else {
+            CollectionView(files = mutableListOf())
+            Toast.makeText(ctx, "Показывать книги пока не умеем", Toast.LENGTH_SHORT).show()
         }
-    )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CollectionScreenPreview() {
     ELibrioTheme {
-        CollectionScreen()
+        LibraryScreen()
     }
 }

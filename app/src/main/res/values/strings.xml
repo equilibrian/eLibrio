@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">E-Librio</string>
+    <string name="app_name_correct" translatable="false">eLibrio</string>
     <string name="library_screen_title">Библиотека</string>
     <string name="authors_screen_title">Авторы</string>
     <string name="settings_screen_title">Настройки</string>
@@ -15,4 +16,13 @@
     <string name="st_filter_all">Все</string>
     <string name="st_filter_recent">Недавние</string>
     <string name="st_filter_favourites">Избранные</string>
+    <string name="title_activity_about_app">Сведения</string>
+    <string name="st_scanning_files">Сканирование файлов</string>
+    <string name="st_backup">Резервное копирование</string>
+    <string name="st_about_app">Сведения</string>
+    <string name="st_category_general">Общие</string>
+    <string name="st_other">Другое</string>
+    <string name="st_version">Версия</string>
+    <string name="st_github" translatable="false">GitHub</string>
+    <string name="st_licenses">Лицензии</string>
 </resources>
