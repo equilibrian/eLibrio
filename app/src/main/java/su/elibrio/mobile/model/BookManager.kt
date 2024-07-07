@@ -5,23 +5,33 @@ import android.database.Cursor
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 
 /**
  * A manager class responsible for handling book-related operations.
  */
 class BookManager {
     companion object {
-        private fun createBooks(filePaths: List<String>): MutableList<Book> {
-            return mutableListOf()
+
+        private fun createBook(filePath: String): Book? {
+            val file = File(filePath)
+            val format = SupportedFormat.fromFile(File(filePath))
+
+            return when (format) {
+                SupportedFormat.FB2 -> createFictionBook(file)
+                null -> null
+            }
+        }
+
+        private fun createFictionBook(file: File): Book? {
+            return null
         }
 
         /**
          * Scans the device for books and returns a list of found books.
          *
-         * This function performs a query on the device's external storage
-         * to find files that match specific MIME types. It runs the query
-         * in a background thread using `Dispatchers.IO` to avoid blocking
-         * the main thread.
+         * Performs a query on the device's external storage
+         * to find files that match specific MIME types.
          *
          * @param ctx The context used to access the content resolver.
          * @return A list of books found on the device.
@@ -29,7 +39,9 @@ class BookManager {
          */
         suspend fun scanDeviceForBooks(ctx: Context): MutableList<Book> {
             return withContext(Dispatchers.IO) {
+                val books = mutableListOf<Book>()
                 val filePaths = mutableListOf<String>()
+
                 val projection = arrayOf(
                     MediaStore.Files.FileColumns.DATA,
                     MediaStore.Files.FileColumns.DISPLAY_NAME,
@@ -53,7 +65,11 @@ class BookManager {
                     }
                 }
 
-                createBooks(filePaths)
+                filePaths.forEach { path ->
+                    createBook(path)?.let { books.add(it) }
+                }
+
+                books
             }
         }
     }

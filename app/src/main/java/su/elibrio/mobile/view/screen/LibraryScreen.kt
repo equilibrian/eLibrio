@@ -107,15 +107,18 @@ fun LibraryScreen(
 ) {
     val ctx = LocalContext.current
 
+    lsViewModel.scanForBooks(ctx)
+
     Column(modifier = modifier
         .fillMaxSize()
         .padding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         FiltersView()
-        if (lsViewModel.inProgress)
+
+        if (lsViewModel.inProgress.value == true)
             LoadingView()
-        else if (lsViewModel.books?.value == null || lsViewModel.books.value?.isEmpty() == true)
+        else if (lsViewModel.books.value == null || lsViewModel.books.value?.isEmpty() == true)
             EmptyCollectionView()
         else {
             CollectionView(files = mutableListOf())
