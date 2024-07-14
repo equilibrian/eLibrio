@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import su.elibrio.mobile.model.Book
 import su.elibrio.mobile.model.BookManager
 
-class LibraryScreenViewModel : ViewModel() {
+class MainActivityViewModel : ViewModel() {
     private val _inProgress = MutableLiveData(false)
     val inProgress: LiveData<Boolean> get() = _inProgress
 

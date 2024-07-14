@@ -3,6 +3,14 @@ package su.elibrio.mobile.model.fb
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 
+/**
+ * Represents the description of a book.
+ *
+ * @property titleInfo The title information of the book.
+ * @property documentInfo The document information of the book.
+ * @property publishInfo The publishing information of the book.
+ * @property customInfo The custom information of the book.
+ */
 data class Description(
     @field:Element(name = "title-info")
     @param:Element(name = "title-info")

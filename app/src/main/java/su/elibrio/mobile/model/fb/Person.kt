@@ -5,6 +5,17 @@ import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Root(name = "person")
+/**
+ * Represents a person involved with the book.
+ *
+ * @property id The ID of the person.
+ * @property firstName The first name of the person.
+ * @property middleName The middle name of the person.
+ * @property lastName The last name of the person.
+ * @property nickname The nickname of the person.
+ * @property homePages The home pages of the person.
+ * @property emails The emails of the person.
+ */
 data class Person @JvmOverloads constructor(
     @param:Element(name = "id", required = false)
     @field:Element(name = "id", required = false)

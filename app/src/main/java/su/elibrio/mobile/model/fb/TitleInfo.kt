@@ -5,6 +5,21 @@ import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Root(name = "title-info")
+/**
+ * Represents the title information of a book.
+ *
+ * @property genre The genres of the book.
+ * @property authors The authors of the book.
+ * @property bookTitle The title of the book.
+ * @property annotation The annotation of the book.
+ * @property keywords The keywords associated with the book.
+ * @property date The date of the book.
+ * @property lang The language of the book.
+ * @property srcLang The source language of the book.
+ * @property coverPage The cover page of the book.
+ * @property translators The translators of the book.
+ * @property sequence The sequence information of the book.
+ */
 data class TitleInfo(
     @field:ElementList(name = "genre", inline = true, required = false, entry = "genre")
     @param:ElementList(name = "genre", inline = true, required = false, entry = "genre")

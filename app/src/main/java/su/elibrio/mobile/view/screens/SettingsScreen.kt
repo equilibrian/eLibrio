@@ -1,4 +1,4 @@
-package su.elibrio.mobile.view.screen
+package su.elibrio.mobile.view.screens
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
