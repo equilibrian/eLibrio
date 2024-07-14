@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">E-Librio</string>
+    <string name="app_name" translatable="false">ELibrio</string>
     <string name="app_name_correct" translatable="false">eLibrio</string>
     <string name="library_screen_title">Библиотека</string>
     <string name="authors_screen_title">Авторы</string>
