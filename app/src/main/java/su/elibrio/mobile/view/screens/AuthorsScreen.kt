@@ -1,4 +1,4 @@
-package su.elibrio.mobile.view.screen
+package su.elibrio.mobile.view.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -1,4 +1,4 @@
-package su.elibrio.mobile.util
+package su.elibrio.mobile.utils
 
 import su.elibrio.mobile.model.LibraryFilter
 import su.elibrio.mobile.model.MainActivityScreens

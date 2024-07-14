@@ -5,6 +5,8 @@ import android.database.Cursor
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import su.elibrio.mobile.model.fb.FictionBook
+import timber.log.Timber
 import java.io.File
 
 /**
@@ -12,7 +14,14 @@ import java.io.File
  */
 class BookManager {
     companion object {
+        private val TAG: String = this::class.java.name
 
+        /**
+         * Creates a `Book` instance from the provided file path.
+         *
+         * @param filePath The path of the file to create the book from.
+         * @return A `Book` instance if the file format is supported, otherwise `null`.
+         */
         private fun createBook(filePath: String): Book? {
             val file = File(filePath)
             val format = SupportedFormat.fromFile(File(filePath))
@@ -23,9 +32,13 @@ class BookManager {
             }
         }
 
-        private fun createFictionBook(file: File): Book? {
-            return null
-        }
+        /**
+         * Creates a `FictionBook` instance from the provided file.
+         *
+         * @param file The file to create the FictionBook from.
+         * @return A `FictionBook` instance parsed from the file.
+         */
+        private fun createFictionBook(file: File): Book = FictionBook.from(file)
 
         /**
          * Scans the device for books and returns a list of found books.
@@ -65,8 +78,12 @@ class BookManager {
                     }
                 }
 
-                filePaths.forEach { path ->
-                    createBook(path)?.let { books.add(it) }
+                filePaths.forEach { path -> // TODO: временная мера, метод должен возвращать только список файлов
+                    try {
+                        createBook(path)?.let { books.add(it) }
+                    } catch (ex: Exception) {
+                        Timber.tag(TAG).e(ex)
+                    }
                 }
 
                 books
