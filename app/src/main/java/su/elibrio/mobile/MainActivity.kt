@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -104,7 +105,10 @@ fun AppBar(scrollBehavior: TopAppBarScrollBehavior, currentScreen: MainActivityS
     val ctx = LocalContext.current
 
     TopAppBar(
-        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent),
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent
+        ),
         title = {
             Crossfade(targetState = currentScreen.titleStrId, label = "") { titleId ->
                 Text(
@@ -133,7 +137,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
         mutableStateOf<MainActivityScreens?>(MainActivityScreens.Library)
     }
 
-    Scaffold(modifier = modifier.fillMaxSize(),
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { AppBar(scrollBehavior, currentScreen!!) },
         content =  { innerPaddings ->
             Box(modifier = Modifier
@@ -181,7 +188,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 TextButton(onClick = {
                     openAlertDialog.value = false
                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                        val uri = Uri.parse("package:su.elibrio.mobile")
+                        val uri = Uri.parse("package:${BuildConfig.APPLICATION_ID}")
                         val intent = Intent(
                             Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
                             uri
@@ -211,8 +218,10 @@ fun BottomNavigation(navController: NavController) {
             NavigationBarItem(
                 selected = selectedItem == idx,
                 onClick = {
-                    selectedItem = idx
-                    navController.navigate(screen.route)
+                    if (selectedItem != idx) {
+                        selectedItem = idx
+                        navController.navigate(screen.route)
+                    }
                 },
                 label = { Text(text = stringResource(id = screen.titleStrId)) },
                 icon = {

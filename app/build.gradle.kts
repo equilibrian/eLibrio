@@ -14,8 +14,8 @@ enum class Stage(private val suffix: String) {
 }
 
 val major = 0
-val minor = 2
-val patch = 0
+val minor = 3
+val patch = 2
 val stage = Stage.ALPHA
 
 val version = "$major.$minor.$patch$stage"
@@ -91,6 +91,8 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.timber)
 
+    implementation(libs.simple.xml)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -102,6 +104,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

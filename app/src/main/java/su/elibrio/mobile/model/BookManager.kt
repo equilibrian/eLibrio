@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 
 /**
@@ -15,6 +16,8 @@ class BookManager {
 
         private fun createBook(filePath: String): Book? {
             val file = File(filePath)
+            Timber.tag("BookManager").d(file.path)
+
             val format = SupportedFormat.fromFile(File(filePath))
 
             return when (format) {
@@ -23,8 +26,8 @@ class BookManager {
             }
         }
 
-        private fun createFictionBook(file: File): Book? {
-            return null
+        private fun createFictionBook(file: File): Book {
+            return Book.FictionBook.from(file)
         }
 
         /**
@@ -66,7 +69,11 @@ class BookManager {
                 }
 
                 filePaths.forEach { path ->
-                    createBook(path)?.let { books.add(it) }
+                    try {
+                        createBook(path)?.let { books.add(it) }
+                    } catch (ex: Exception) {
+                        Timber.tag("BookManager").e(ex)
+                    }
                 }
 
                 books
