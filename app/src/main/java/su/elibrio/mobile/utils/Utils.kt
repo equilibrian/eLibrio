@@ -3,7 +3,6 @@ package su.elibrio.mobile.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import timber.log.Timber
 
 /**
  * A class containing utility methods.
