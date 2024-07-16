@@ -1,28 +1,30 @@
 <resources>
     <string name="app_name" translatable="false">ELibrio</string>
     <string name="app_name_correct" translatable="false">eLibrio</string>
-    <string name="library_screen_title">Библиотека</string>
-    <string name="authors_screen_title">Авторы</string>
-    <string name="settings_screen_title">Настройки</string>
-    <string name="nothing_to_show">Тут ничего нет…</string>
-    <string name="st_import">Импорт</string>
+    <string name="library_screen_title">Library</string>
+    <string name="authors_screen_title">Authors</string>
+    <string name="settings_screen_title">Settings</string>
+    <string name="nothing_to_show">Collection is empty</string>
+    <string name="st_import">Import</string>
     <string name="st_lang_ru" translatable="false">Русский</string>
     <string name="st_lang_en" translatable="false">English</string>
-    <string name="st_dialog_storage_access_needed_title">Предоставьте доступ к хранилищу</string>
-    <string name="st_dialog_storage_access_needed_body">Чтобы приложение могло открывать книги и документы, необходимо разрешить доступ к файлам на устройстве.</string>
+    <string name="st_dialog_storage_access_needed_title">Grant access to the storage</string>
+    <string name="st_dialog_storage_access_needed_body">To allow the application to open books and documents, it is necessary to grant access to the files on the device.</string>
     <string name="st_ok" translatable="false">ОК</string>
-    <string name="st_cancel">Отмена</string>
-    <string name="st_continue">Продолжить</string>
-    <string name="st_filter_all">Все</string>
-    <string name="st_filter_recent">Недавние</string>
-    <string name="st_filter_favourites">Избранные</string>
-    <string name="title_activity_about_app">Сведения</string>
-    <string name="st_scanning_files">Сканирование файлов</string>
-    <string name="st_backup">Резервное копирование</string>
-    <string name="st_about_app">Сведения</string>
-    <string name="st_category_general">Общие</string>
-    <string name="st_other">Другое</string>
-    <string name="st_version">Версия</string>
+    <string name="st_cancel">Cancel</string>
+    <string name="st_continue">Continue</string>
+    <string name="st_filter_all">All</string>
+    <string name="st_filter_recent">Recent</string>
+    <string name="st_filter_favourites">Favourites</string>
+    <string name="title_activity_about_app">About app</string>
+    <string name="st_scanning_files">Scanning files</string>
+    <string name="st_backup">Backup</string>
+    <string name="st_about_app">About app</string>
+    <string name="st_category_general">General</string>
+    <string name="st_other">Other</string>
+    <string name="st_elibrio_version">eLibrio for Android v</string>
     <string name="st_github" translatable="false">GitHub</string>
-    <string name="st_licenses">Лицензии</string>
+    <string name="st_licenses">Open Source Licenses</string>
+    <string name="title_activity_licenses">Open Source Licenses</string>
+    <string name="st_url_github" translatable="false">https://github.com/equilibrian/eLibrio</string>
 </resources>

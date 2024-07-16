@@ -24,38 +24,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
-import su.elibrio.mobile.AboutAppActivity
+import su.elibrio.mobile.BuildConfig
 import su.elibrio.mobile.R
 import su.elibrio.mobile.ui.theme.ELibrioTheme
-
-@Composable
-fun SettingsButton(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
-    TextButton(
-        onClick = { onClick() },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 4.dp),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = text,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_expand_right),
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
+import su.elibrio.mobile.view.activities.LicensesActivity
+import su.elibrio.mobile.view.components.SettingsButton
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
@@ -85,10 +58,21 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         )
 
         Card(modifier = modifier.fillMaxWidth()) {
-            SettingsButton(text = stringResource(id = R.string.st_about_app), onClick = {
-                val intent = Intent(ctx, AboutAppActivity::class.java)
+            SettingsButton(text = stringResource(id = R.string.st_licenses), onClick = {
+                val intent = Intent(ctx, LicensesActivity::class.java)
                 startActivity(ctx, intent, null)
             })
+        }
+
+        TextButton(
+            onClick = {  },
+            modifier = modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "${stringResource(id = R.string.st_elibrio_version)}${BuildConfig.VERSION_NAME}",
+                color = MaterialTheme.colorScheme.outline,
+                style = MaterialTheme.typography.labelMedium
+            )
         }
     }
 }

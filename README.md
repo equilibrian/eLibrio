@@ -9,16 +9,18 @@
     <a href="https://github.com/equilibrian/eLibrio/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-GPLv3-green" alt="License" ></a>
 </p>
 
-eLibrio is a free, open-source program for reading e-books.
-
 eLibrio allows users to conveniently read e-books in various formats. The program is being developed to provide a simple and intuitive interface for reading and managing a library of books.
 
-### Supported Formats
+## Supported formats
 
-| Format | Status   |
-|--------|----------|
-| FB2    | Planned  |
-| PDF    | Planned  |
-| DjVu   | Planned  |
-| MOBI   | Planned  |
-| EPUB   | Planned  |
+| Format | Status      |
+|--------|-------------|
+| FB2    | In progress |
+| PDF    | Planned     |
+| DjVu   | Planned     |
+| MOBI   | Planned     |
+| EPUB   | Planned     |
+
+
+## License
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details.
