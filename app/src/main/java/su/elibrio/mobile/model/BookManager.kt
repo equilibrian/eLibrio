@@ -14,17 +14,14 @@ import java.io.File
  */
 class BookManager {
     companion object {
-        private val TAG: String = this::class.java.name
-
         /**
-         * Creates a `Book` instance from the provided file path.
+         * Creates a `Book` instance from the provided file.
          *
-         * @param filePath The path of the file to create the book from.
+         * @param file The file to create the book from.
          * @return A `Book` instance if the file format is supported, otherwise `null`.
          */
-        private fun createBook(filePath: String): Book? {
-            val file = File(filePath)
-            val format = SupportedFormat.fromFile(File(filePath))
+        private fun createBook(file: File): Book? {
+            val format = SupportedFormat.from(file)
 
             return when (format) {
                 SupportedFormat.FB2 -> createFictionBook(file)
@@ -51,9 +48,10 @@ class BookManager {
          * @throws IllegalArgumentException If a column does not exist in the cursor.
          */
         suspend fun scanDeviceForBooks(ctx: Context): MutableList<Book> {
+            Timber.d("starting scanning device for books")
             return withContext(Dispatchers.IO) {
                 val books = mutableListOf<Book>()
-                val filePaths = mutableListOf<String>()
+                val files = mutableListOf<File>()
 
                 val projection = arrayOf(
                     MediaStore.Files.FileColumns.DATA,
@@ -74,17 +72,19 @@ class BookManager {
                     val dataIdx = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
 
                     while (it.moveToNext()) {
-                        filePaths.add(it.getString(dataIdx))
+                        files.add(File(it.getString(dataIdx)))
                     }
                 }
 
-                filePaths.forEach { path -> // TODO: временная мера, метод должен возвращать только список файлов
+                files.forEach { file -> // TODO: временная мера, метод должен возвращать только список файлов
                     try {
-                        createBook(path)?.let { books.add(it) }
+                        createBook(file)?.let { books.add(it) }
                     } catch (ex: Exception) {
-                        Timber.tag(TAG).e(ex)
+                        Timber.e(ex)
                     }
                 }
+
+                Timber.d("${files.count()} books found")
 
                 books
             }

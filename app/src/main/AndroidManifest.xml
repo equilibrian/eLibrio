@@ -12,23 +12,23 @@
 
     <application
         android:name=".Application"
-        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ELibrio"
         tools:targetApi="31">
         <activity
-            android:name=".AboutAppActivity"
+            android:name=".view.activities.LicensesActivity"
             android:exported="false"
-            android:label="@string/title_activity_about_app"
+            android:label="@string/title_activity_licenses"
             android:theme="@style/Theme.ELibrio" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.activities.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ELibrio">
             <intent-filter>

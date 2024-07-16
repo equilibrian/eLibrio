@@ -1,6 +1,9 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.mikepenz.aboutlibraries)
 }
 
 enum class Stage(private val suffix: String) {
@@ -14,8 +17,8 @@ enum class Stage(private val suffix: String) {
 }
 
 val major = 0
-val minor = 3
-val patch = 2
+val minor = 5
+val patch = 0
 val stage = Stage.ALPHA
 
 val version = "$major.$minor.$patch$stage"
@@ -89,9 +92,15 @@ android {
 
 dependencies {
     implementation(libs.accompanist.permissions)
+
     implementation(libs.timber)
+    implementation(libs.slf4j.api)
+    implementation(libs.logback.android)
 
     implementation(libs.simple.xml)
+
+    implementation(libs.aboutlibraries.core)
+    implementation(libs.aboutlibraries.compose.m3)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -112,4 +121,23 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+aboutLibraries {
+    registerAndroidTasks = false
+    outputFileName = "aboutlibraries.json"
+    configPath = "config"
+    offlineMode = false
+    fetchRemoteLicense = true
+    fetchRemoteFunding = true
+    gitHubApiToken = gradleLocalProperties(rootDir, providers).getProperty("github.pat")
+    additionalLicenses = arrayOf("mit", "mpl_2_0")
+    excludeFields = arrayOf("developers", "funding")
+    includePlatform = true
+    strictMode = com.mikepenz.aboutlibraries.plugin.StrictMode.WARN
+    allowedLicenses = arrayOf("Apache-2.0", "asdkl")
+    duplicationMode = com.mikepenz.aboutlibraries.plugin.DuplicateMode.LINK
+    duplicationRule = com.mikepenz.aboutlibraries.plugin.DuplicateRule.SIMPLE
+    prettyPrint = false
+    filterVariants = arrayOf("debug", "release")
 }

@@ -26,6 +26,6 @@ fun AuthorsScreen(modifier: Modifier = Modifier) {
 @Composable
 fun AuthorsScreenPreview() {
     ELibrioTheme {
-        LibraryScreen()
+        AuthorsScreen()
     }
 }

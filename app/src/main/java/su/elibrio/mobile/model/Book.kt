@@ -1,3 +1,9 @@
 package su.elibrio.mobile.model
 
-interface Book {}
+import android.content.Context
+import android.graphics.Bitmap
+
+interface Book {
+    fun getBookTitle(): String
+    fun getCoverPage(ctx: Context): Bitmap
+}

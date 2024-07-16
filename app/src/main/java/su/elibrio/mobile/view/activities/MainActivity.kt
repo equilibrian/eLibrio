@@ -1,4 +1,4 @@
-package su.elibrio.mobile
+package su.elibrio.mobile.view.activities
 
 import android.Manifest
 import android.content.Context
@@ -55,6 +55,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import su.elibrio.mobile.BuildConfig
+import su.elibrio.mobile.R
 import su.elibrio.mobile.model.MainActivityScreens
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.utils.MAIN_ACTIVITY_SCREENS

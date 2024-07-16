@@ -18,6 +18,7 @@
     <string name="st_about_app">Сведения</string>
     <string name="st_category_general">Общие</string>
     <string name="st_other">Другое</string>
-    <string name="st_version">Версия</string>
-    <string name="st_licenses">Лицензии</string>
+    <string name="st_elibrio_version">eLibrio для Android v</string>
+    <string name="st_licenses">Лицензии открытого ПО</string>
+    <string name="title_activity_licenses">Лицензии открытого ПО</string>
 </resources>

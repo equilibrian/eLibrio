@@ -18,6 +18,7 @@
     <string name="st_about_app">About app</string>
     <string name="st_category_general">General</string>
     <string name="st_other">Other</string>
-    <string name="st_version">Version</string>
-    <string name="st_licenses">Licenses</string>
+    <string name="st_elibrio_version">eLibrio for Android v</string>
+    <string name="st_licenses">Open Source Licenses</string>
+    <string name="title_activity_licenses">Open Source Licenses</string>
 </resources>
