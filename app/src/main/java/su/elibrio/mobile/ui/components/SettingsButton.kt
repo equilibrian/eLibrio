@@ -1,4 +1,4 @@
-package su.elibrio.mobile.view.components
+package su.elibrio.mobile.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -40,7 +40,7 @@ fun SettingsButton(modifier: Modifier = Modifier, text: String, onClick: () -> U
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_expand_right),
                 contentDescription = "",
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

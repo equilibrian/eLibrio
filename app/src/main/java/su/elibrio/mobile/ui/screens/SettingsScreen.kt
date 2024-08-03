@@ -1,4 +1,4 @@
-package su.elibrio.mobile.view.screens
+package su.elibrio.mobile.ui.screens
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +21,8 @@ import androidx.core.content.ContextCompat.startActivity
 import su.elibrio.mobile.BuildConfig
 import su.elibrio.mobile.R
 import su.elibrio.mobile.ui.theme.ELibrioTheme
-import su.elibrio.mobile.view.activities.LicensesActivity
-import su.elibrio.mobile.view.components.SettingsButton
+import su.elibrio.mobile.LicensesActivity
+import su.elibrio.mobile.ui.components.SettingsButton
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
@@ -33,23 +33,11 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = stringResource(id = R.string.st_category_general),
-            color = MaterialTheme.colorScheme.outline,
-            style = MaterialTheme.typography.labelLarge
-        )
-
         Card(modifier = modifier.fillMaxWidth()) {
             SettingsButton(text = stringResource(id = R.string.st_scanning_files), onClick = {})
             HorizontalDivider(modifier = modifier.padding(horizontal = 12.dp))
             SettingsButton(text = stringResource(id = R.string.st_backup), onClick = {})
         }
-
-        Text(
-            text = stringResource(id = R.string.st_other),
-            color = MaterialTheme.colorScheme.outline,
-            style = MaterialTheme.typography.labelLarge
-        )
 
         Card(modifier = modifier.fillMaxWidth()) {
             SettingsButton(text = stringResource(id = R.string.st_licenses), onClick = {

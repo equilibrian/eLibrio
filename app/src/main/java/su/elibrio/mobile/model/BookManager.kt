@@ -76,7 +76,7 @@ class BookManager {
                     }
                 }
 
-                files.forEach { file -> // TODO: временная мера, метод должен возвращать только список файлов
+                files.forEach { file ->
                     try {
                         createBook(file)?.let { books.add(it) }
                     } catch (ex: Exception) {
@@ -86,7 +86,7 @@ class BookManager {
 
                 Timber.d("${files.count()} books found")
 
-                books
+                books // TODO: временная мера, метод должен возвращать только список файлов
             }
         }
     }

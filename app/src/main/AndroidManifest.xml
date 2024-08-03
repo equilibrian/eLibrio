@@ -23,12 +23,17 @@
         android:theme="@style/Theme.ELibrio"
         tools:targetApi="31">
         <activity
-            android:name=".view.activities.LicensesActivity"
+            android:name=".BookActivity"
+            android:exported="false"
+            android:label="@string/title_activity_book"
+            android:theme="@style/Theme.ELibrio" />
+        <activity
+            android:name=".LicensesActivity"
             android:exported="false"
             android:label="@string/title_activity_licenses"
             android:theme="@style/Theme.ELibrio" />
         <activity
-            android:name=".view.activities.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ELibrio">
             <intent-filter>

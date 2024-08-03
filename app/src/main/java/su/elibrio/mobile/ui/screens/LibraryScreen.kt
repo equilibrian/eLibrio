@@ -1,4 +1,4 @@
-package su.elibrio.mobile.view.screens
+package su.elibrio.mobile.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -35,9 +35,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import su.elibrio.mobile.R
 import su.elibrio.mobile.model.Book
 import su.elibrio.mobile.ui.theme.ELibrioTheme
-import su.elibrio.mobile.view.components.BookView
-import su.elibrio.mobile.view.components.FiltersView
-import su.elibrio.mobile.view.components.LoadingView
+import su.elibrio.mobile.ui.components.BookView
+import su.elibrio.mobile.ui.components.FiltersView
+import su.elibrio.mobile.ui.components.LoadingView
 import su.elibrio.mobile.viewmodel.MainActivityViewModel
 
 @Composable

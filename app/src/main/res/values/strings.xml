@@ -27,4 +27,5 @@
     <string name="st_licenses">Open Source Licenses</string>
     <string name="title_activity_licenses">Open Source Licenses</string>
     <string name="st_url_github" translatable="false">https://github.com/equilibrian/eLibrio</string>
+    <string name="title_activity_book">BookActivity</string>
 </resources>

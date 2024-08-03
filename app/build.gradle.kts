@@ -17,7 +17,7 @@ enum class Stage(private val suffix: String) {
 }
 
 val major = 0
-val minor = 5
+val minor = 6
 val patch = 0
 val stage = Stage.ALPHA
 
@@ -101,6 +101,8 @@ dependencies {
 
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose.m3)
+
+    implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

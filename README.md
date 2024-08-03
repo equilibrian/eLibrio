@@ -16,10 +16,10 @@ eLibrio allows users to conveniently read e-books in various formats. The progra
 | Format | Status      |
 |--------|-------------|
 | FB2    | In progress |
-| PDF    | Planned     |
-| DjVu   | Planned     |
 | MOBI   | Planned     |
 | EPUB   | Planned     |
+| PDF    | Planned     |
+| DjVu   | Planned     |
 
 
 ## License

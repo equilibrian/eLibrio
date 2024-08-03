@@ -1,4 +1,4 @@
-package su.elibrio.mobile.view.components
+package su.elibrio.mobile.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

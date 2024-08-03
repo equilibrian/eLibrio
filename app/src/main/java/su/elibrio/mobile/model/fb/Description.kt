@@ -16,7 +16,7 @@ data class Description(
     @param:Element(name = "title-info")
     val titleInfo: TitleInfo,
 
-    @field:Element(name = "document-info", required = false) // TODO: required??
+    @field:Element(name = "document-info", required = false)
     @param:Element(name = "document-info", required = false)
     val documentInfo: DocumentInfo?,
 

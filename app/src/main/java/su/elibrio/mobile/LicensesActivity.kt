@@ -1,4 +1,4 @@
-package su.elibrio.mobile.view.activities
+package su.elibrio.mobile
 
 import android.app.Activity
 import android.os.Bundle
@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
-import su.elibrio.mobile.R
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 
 class LicensesActivity : ComponentActivity() {

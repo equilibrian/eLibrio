@@ -1,7 +1,6 @@
-package su.elibrio.mobile.view.activities
+package su.elibrio.mobile
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -55,14 +54,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import su.elibrio.mobile.BuildConfig
-import su.elibrio.mobile.R
 import su.elibrio.mobile.model.MainActivityScreens
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.utils.MAIN_ACTIVITY_SCREENS
-import su.elibrio.mobile.view.screens.AuthorsScreen
-import su.elibrio.mobile.view.screens.LibraryScreen
-import su.elibrio.mobile.view.screens.SettingsScreen
+import su.elibrio.mobile.ui.screens.AuthorsScreen
+import su.elibrio.mobile.ui.screens.LibraryScreen
+import su.elibrio.mobile.ui.screens.SettingsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +74,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppBarActions(currentScreen: MainActivityScreens, ctx: Context) {
+fun AppBarActions(currentScreen: MainActivityScreens) {
+    val ctx = LocalContext.current
     Row {
         AnimatedVisibility(visible = currentScreen != MainActivityScreens.Settings) {
             IconButton(onClick = {}) {
@@ -92,7 +90,10 @@ fun AppBarActions(currentScreen: MainActivityScreens, ctx: Context) {
             visible = currentScreen != MainActivityScreens.Authors
                     && currentScreen != MainActivityScreens.Settings
         ) {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                val intent = Intent(ctx, BookActivity::class.java)
+                startActivity(ctx, intent, null)
+            }) {
                 Icon(painter = painterResource(R.drawable.add_icon), contentDescription = null)
             }
         }
@@ -101,23 +102,24 @@ fun AppBarActions(currentScreen: MainActivityScreens, ctx: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(scrollBehavior: TopAppBarScrollBehavior, currentScreen: MainActivityScreens) {
-    val ctx = LocalContext.current
-
+fun AppBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    currentScreenState: MutableState<MainActivityScreens>
+) {
     TopAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent
         ),
         title = {
-            Crossfade(targetState = currentScreen.titleStrId, label = "") { titleId ->
+            Crossfade(targetState = currentScreenState.value.titleStrId, label = "") { titleId ->
                 Text(
                     text = stringResource(id = titleId),
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
-        actions = { AppBarActions(currentScreen = currentScreen, ctx = ctx) },
+        actions = { AppBarActions(currentScreen = currentScreenState.value) },
         scrollBehavior = scrollBehavior
     )
 }
@@ -166,22 +168,25 @@ fun CheckPermissionsAndShowDialog(
 }
 
 @Composable
-fun setupNavHost(navController: NavHostController, currentScreen: MutableState<MainActivityScreens?>) {
+fun setupNavHost(
+    navController: NavHostController,
+    currentScreenState: MutableState<MainActivityScreens>
+) {
     NavHost(
         navController = navController,
         startDestination = MainActivityScreens.Library.route
     ) {
         composable(MainActivityScreens.Library.route) {
             LibraryScreen()
-            currentScreen.value = MainActivityScreens.Library
+            currentScreenState.value = MainActivityScreens.Library
         }
         composable(MainActivityScreens.Authors.route) {
             AuthorsScreen()
-            currentScreen.value = MainActivityScreens.Authors
+            currentScreenState.value = MainActivityScreens.Authors
         }
         composable(MainActivityScreens.Settings.route) {
             SettingsScreen()
-            currentScreen.value = MainActivityScreens.Settings
+            currentScreenState.value = MainActivityScreens.Settings
         }
     }
 }
@@ -222,13 +227,15 @@ fun MainScreen(modifier: Modifier = Modifier) {
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val navController = rememberNavController()
-    val currentScreen by remember { mutableStateOf<MainActivityScreens?>(MainActivityScreens.Library) }
+    val currentScreenState = remember {
+        mutableStateOf<MainActivityScreens>(MainActivityScreens.Library)
+    }
 
     Scaffold(
         modifier = modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = { AppBar(scrollBehavior, currentScreen!!) },
+        topBar = { AppBar(scrollBehavior, currentScreenState) },
         content = { innerPaddings ->
             Box(
                 modifier = Modifier
@@ -238,7 +245,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         bottom = innerPaddings.calculateBottomPadding()
                     )
             ) {
-                setupNavHost(navController, mutableStateOf(currentScreen))
+                setupNavHost(navController, currentScreenState)
             }
         },
         bottomBar = { BottomNavigation(navController = navController) }
@@ -246,6 +253,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
 
     CheckPermissionsAndShowDialog(openAlertDialog, externalStoragePermissionState)
 }
+
 
 @Preview(showBackground = true)
 @Composable
