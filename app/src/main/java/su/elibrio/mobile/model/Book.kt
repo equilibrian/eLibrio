@@ -4,6 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 
 interface Book {
-    fun getBookTitle(): String
     fun getCoverPage(ctx: Context): Bitmap
+
+    fun getBookTitle(): String
+
+    fun getAuthorFullName(): String?
+
+    fun getBookSequence(): String?
+
+    fun getBookDescription(): String?
 }

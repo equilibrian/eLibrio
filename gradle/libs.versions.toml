@@ -3,6 +3,8 @@ aboutlibrariesCore = "11.2.2"
 accompanistPermissions = "0.35.1-alpha"
 accompanistSystemuicontroller = "0.27.0"
 agp = "8.5.1"
+hiltAndroid = "2.49"
+hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -14,6 +16,7 @@ composeBom = "2024.06.00"
 logbackAndroid = "3.0.0"
 navigationCompose = "2.7.7"
 roomKtx = "2.6.1"
+roomRuntime = "2.6.1"
 simpleXml = "2.7.1"
 slf4jApi = "2.0.7"
 timber = "5.0.1"
@@ -26,7 +29,11 @@ aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -52,4 +59,5 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 mikepenz-aboutlibraries = {id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries"}
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 

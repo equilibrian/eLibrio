@@ -1,6 +1,8 @@
 package su.elibrio.mobile.ui.components
 
+import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -20,7 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import su.elibrio.mobile.model.Book
+import su.elibrio.mobile.BookActivity
+import su.elibrio.mobile.model.database.repository.Book
+import su.elibrio.mobile.utils.Utils
 
 @Composable
 fun BookView(modifier: Modifier = Modifier, book: Book) {
@@ -30,13 +34,19 @@ fun BookView(modifier: Modifier = Modifier, book: Book) {
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
             .fillMaxWidth()
+            .clickable {
+                val intent = Intent(ctx, BookActivity::class.java).apply {
+                    putExtra("BOOK_ID", book.id)
+                }
+                ctx.startActivity(intent)
+            }
     ) {
         Card(
             shape = RoundedCornerShape(2.dp),
             elevation = CardDefaults.cardElevation(6.dp)
         ) {
             Image(
-                bitmap = book.getCoverPage(ctx).asImageBitmap(),
+                bitmap = Utils.loadBitmap(ctx, book.coverPageSrc).asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier
                     .clip(RoundedCornerShape(2.dp))
@@ -47,7 +57,7 @@ fun BookView(modifier: Modifier = Modifier, book: Book) {
         }
 
         Text(
-            text = book.getBookTitle(),
+            text = book.title,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp),

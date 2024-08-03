@@ -31,13 +31,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import su.elibrio.mobile.R
-import su.elibrio.mobile.model.Book
-import su.elibrio.mobile.ui.theme.ELibrioTheme
+import su.elibrio.mobile.model.database.repository.Book
 import su.elibrio.mobile.ui.components.BookView
 import su.elibrio.mobile.ui.components.FiltersView
 import su.elibrio.mobile.ui.components.LoadingView
+import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.viewmodel.MainActivityViewModel
 
 @Composable
@@ -81,7 +81,7 @@ fun CollectionView(modifier: Modifier = Modifier, state: LazyGridState, files: L
 
 @Composable
 fun LibraryScreen(
-    modifier: Modifier = Modifier, viewModel: MainActivityViewModel = viewModel()
+    modifier: Modifier = Modifier, viewModel: MainActivityViewModel = hiltViewModel()
 ) {
     val ctx = LocalContext.current
     val inProgress by viewModel.inProgress.observeAsState(false)

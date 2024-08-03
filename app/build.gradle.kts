@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.mikepenz.aboutlibraries)
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
 }
 
 enum class Stage(private val suffix: String) {
@@ -17,7 +19,7 @@ enum class Stage(private val suffix: String) {
 }
 
 val major = 0
-val minor = 6
+val minor = 7
 val patch = 0
 val stage = Stage.ALPHA
 
@@ -104,6 +106,13 @@ dependencies {
 
     implementation(libs.accompanist.systemuicontroller)
 
+    implementation(libs.androidx.room.runtime)
+    kapt("androidx.room:room-compiler:2.6.1")
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -123,6 +132,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 aboutLibraries {

@@ -45,6 +45,28 @@ data class FictionBook(
 
     override fun getBookTitle(): String = description.titleInfo.bookTitle
 
+    override fun getAuthorFullName(): String? {
+        val persons = description.titleInfo.authors
+        val authors: StringBuilder = StringBuilder()
+        persons.forEachIndexed { idx, person ->
+            authors.append(if (idx == persons.lastIndex) person.getFullName() else ", ${person.getFullName()}")
+        }
+
+        return if (persons.isNotEmpty()) authors.toString() else null
+    }
+
+    override fun getBookSequence(): String? = description.titleInfo.sequence?.last()?.name
+
+    override fun getBookDescription(): String? {
+        val paragraphs = description.titleInfo.annotation?.paragraph
+        val description = StringBuilder()
+        paragraphs?.forEach { p ->
+            description.append("<p>${p.value?.trim()}</p>")
+        }
+
+        return if (description.isNotEmpty()) description.toString() else null
+    }
+
     override fun getCoverPage(ctx: Context): Bitmap {
         val noCover: Bitmap = ctx.getDrawable(R.drawable.no_cover)?.toBitmap()!!
         val coverPageId: String = description.titleInfo.coverPage?.image?.imageId ?: return noCover

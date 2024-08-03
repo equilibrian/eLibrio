@@ -2,11 +2,13 @@ package su.elibrio.mobile
 
 import android.app.Application
 import android.os.Environment
+import dagger.hilt.android.HiltAndroidApp
 import su.elibrio.mobile.utils.FileLoggingTree
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
 import java.io.File
 
+@HiltAndroidApp
 class Application : Application() {
     override fun onCreate() {
         super.onCreate()

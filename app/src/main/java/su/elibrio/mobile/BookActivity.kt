@@ -36,8 +36,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,19 +51,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.mikepenz.aboutlibraries.ui.compose.m3.HtmlText
+import dagger.hilt.android.AndroidEntryPoint
 import su.elibrio.mobile.ui.components.MetricView
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.viewmodel.BookActivityViewModel
 
+@AndroidEntryPoint
 class BookActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val bookId = intent.getIntExtra("BOOK_ID", -1)
+
         enableEdgeToEdge()
         setContent {
             ELibrioTheme {
-                BookScreen()
+                BookScreen(bookId = bookId)
             }
         }
     }
@@ -118,7 +125,13 @@ fun TopBar(isTitleVisible: Boolean) {
 }
 
 @Composable
-fun BookCard(coverPage: Bitmap, modifier: Modifier = Modifier) {
+fun BookCard(
+    coverPage: Bitmap,
+    title: String,
+    authorName: String,
+    progress: Float,
+    modifier: Modifier = Modifier
+) {
     Card(modifier = modifier.fillMaxWidth()) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -133,14 +146,14 @@ fun BookCard(coverPage: Bitmap, modifier: Modifier = Modifier) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(text = "Book title")
+                Text(text = title)
                 Text(
-                    text = "Author name",
+                    text = authorName,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
                 LinearProgressIndicator(
-                    progress = { 0.07f },
+                    progress = { progress },
                     modifier = modifier
                         .width(128.dp)
                         .padding(top = 6.dp),
@@ -181,26 +194,35 @@ fun BookMetrics() {
 }
 
 @Composable
-fun BookDescription() {
-    Text(
+fun BookDescription(description: String?) {
+    HtmlText(
         modifier = Modifier.padding(top = 12.dp),
-        text = "Длинное, подробное описание книги. Сейчас его нет, но оно обязательно будет, вот прям точно. 100%.",
-        style = MaterialTheme.typography.bodyMedium
+        html = if (description.isNullOrEmpty()) "No description" else description
     )
+    /*Text(
+        modifier = Modifier.padding(top = 12.dp),
+        text = if (description.isNullOrEmpty()) "No description" else description,
+        style = MaterialTheme.typography.bodyMedium
+    )*/
 }
 
 @Composable
 fun BookScreen(
     modifier: Modifier = Modifier,
-    viewModel: BookActivityViewModel = viewModel()
+    viewModel: BookActivityViewModel = hiltViewModel(),
+    bookId: Int = 0
 ) {
     val ctx = LocalContext.current
+    if (bookId == -1) (ctx as Activity).finish()
     val state = rememberLazyListState()
     val isTitleVisible by remember {
         derivedStateOf { state.firstVisibleItemIndex != 0 }
     }
 
-    val bitmap = ctx.getDrawable(R.drawable.no_cover)?.toBitmap()!!
+    val book by viewModel.book.observeAsState(null)
+    LaunchedEffect(bookId) {
+        viewModel.findBook(bookId)
+    }
 
     Scaffold(
         modifier = modifier,
@@ -212,9 +234,18 @@ fun BookScreen(
                 .padding(horizontal = 12.dp),
             state = state
         ) {
-            item { BookCard(coverPage = bitmap) }
+            item {
+                if (book != null) {
+                    BookCard(
+                        coverPage = book!!.getCoverPage(ctx),
+                        title = book!!.getBookTitle(),
+                        authorName = book!!.getAuthorFullName() ?: "Unknown",
+                        progress = 0f
+                    )
+                }
+            }
             item { BookMetrics() }
-            item { BookDescription() }
+            item { BookDescription(book?.getBookDescription()) }
         }
     }
 }

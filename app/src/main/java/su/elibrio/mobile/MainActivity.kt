@@ -54,6 +54,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import dagger.hilt.android.AndroidEntryPoint
 import su.elibrio.mobile.model.MainActivityScreens
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.utils.MAIN_ACTIVITY_SCREENS
@@ -61,6 +62,7 @@ import su.elibrio.mobile.ui.screens.AuthorsScreen
 import su.elibrio.mobile.ui.screens.LibraryScreen
 import su.elibrio.mobile.ui.screens.SettingsScreen
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,9 +5,11 @@ import android.database.Cursor
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import su.elibrio.mobile.exceptions.UnsupportedBookException
 import su.elibrio.mobile.model.fb.FictionBook
 import timber.log.Timber
 import java.io.File
+import kotlin.jvm.Throws
 
 /**
  * A manager class responsible for handling book-related operations.
@@ -18,14 +20,16 @@ class BookManager {
          * Creates a `Book` instance from the provided file.
          *
          * @param file The file to create the book from.
-         * @return A `Book` instance if the file format is supported, otherwise `null`.
+         * @return A `Book` instance.
+         * @throws UnsupportedBookException If a book format does not supported.
          */
-        private fun createBook(file: File): Book? {
+        @Throws(UnsupportedBookException::class)
+        fun createBook(file: File): Book {
             val format = SupportedFormat.from(file)
 
             return when (format) {
                 SupportedFormat.FB2 -> createFictionBook(file)
-                null -> null
+                null -> throw UnsupportedBookException()
             }
         }
 
@@ -47,11 +51,10 @@ class BookManager {
          * @return A list of books found on the device.
          * @throws IllegalArgumentException If a column does not exist in the cursor.
          */
-        suspend fun scanDeviceForBooks(ctx: Context): MutableList<Book> {
+        suspend fun scanDeviceForBooks(ctx: Context): List<String> {
             Timber.d("starting scanning device for books")
             return withContext(Dispatchers.IO) {
-                val books = mutableListOf<Book>()
-                val files = mutableListOf<File>()
+                val srcs = mutableListOf<String>()
 
                 val projection = arrayOf(
                     MediaStore.Files.FileColumns.DATA,
@@ -71,22 +74,12 @@ class BookManager {
                 cursor?.use {
                     val dataIdx = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
 
-                    while (it.moveToNext()) {
-                        files.add(File(it.getString(dataIdx)))
-                    }
+                    while (it.moveToNext()) srcs.add(it.getString(dataIdx))
                 }
 
-                files.forEach { file ->
-                    try {
-                        createBook(file)?.let { books.add(it) }
-                    } catch (ex: Exception) {
-                        Timber.e(ex)
-                    }
-                }
+                Timber.d("${srcs.count()} books found")
 
-                Timber.d("${files.count()} books found")
-
-                books // TODO: временная мера, метод должен возвращать только список файлов
+                srcs
             }
         }
     }
