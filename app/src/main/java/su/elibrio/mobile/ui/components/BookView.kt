@@ -1,7 +1,5 @@
 package su.elibrio.mobile.ui.components
 
-import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,18 +14,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import su.elibrio.mobile.BookActivity
+import androidx.navigation.NavController
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import su.elibrio.mobile.R
 import su.elibrio.mobile.model.database.repository.Book
-import su.elibrio.mobile.utils.Utils
 
 @Composable
-fun BookView(modifier: Modifier = Modifier, book: Book) {
+fun BookView(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    book: Book?,
+    showTitle: Boolean = true,
+    aspectRatio: Float = 0.75f
+) {
     val ctx = LocalContext.current
 
     Column(
@@ -35,36 +42,43 @@ fun BookView(modifier: Modifier = Modifier, book: Book) {
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                val intent = Intent(ctx, BookActivity::class.java).apply {
-                    putExtra("BOOK_ID", book.id)
-                }
-                ctx.startActivity(intent)
+                navController.navigate("book/${book?.id}")
             }
     ) {
         Card(
-            shape = RoundedCornerShape(2.dp),
-            elevation = CardDefaults.cardElevation(6.dp)
+            shape = RoundedCornerShape(4.dp),
+            elevation = CardDefaults.cardElevation(4.dp)
         ) {
-            Image(
-                bitmap = Utils.loadBitmap(ctx, book.coverPageSrc).asImageBitmap(),
+            val imageLoader = ImageLoader.Builder(ctx)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .build()
+
+            AsyncImage(
+                model = book?.coverPageSrc,
                 contentDescription = null,
+                imageLoader = imageLoader,
                 modifier = Modifier
                     .clip(RoundedCornerShape(2.dp))
-                    .aspectRatio(0.75f)
+                    .aspectRatio(aspectRatio)
                     .fillMaxWidth(),
-                contentScale = ContentScale.FillBounds
+                placeholder = painterResource(id = R.drawable.no_cover),
+                error = painterResource(id = R.drawable.no_cover),
+                contentScale = ContentScale.FillBounds,
             )
         }
 
-        Text(
-            text = book.title,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp),
-            textAlign = TextAlign.Center,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            style = MaterialTheme.typography.labelSmall,
-        )
+        if (showTitle) {
+            Text(
+                text = book!!.title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                style = MaterialTheme.typography.labelSmall,
+            )
+        }
     }
 }

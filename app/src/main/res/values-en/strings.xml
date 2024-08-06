@@ -21,4 +21,17 @@
     <string name="st_elibrio_version">eLibrio for Android v</string>
     <string name="st_licenses">Open Source Licenses</string>
     <string name="title_activity_licenses">Open Source Licenses</string>
+    <string name="st_sequence">Sequence</string>
+    <string name="st_publisher">Publisher</string>
+    <string name="st_year">Year</string>
+    <string name="st_lang">Language</string>
+    <string name="st_translator">Translator</string>
+    <string name="st_format">Format</string>
+    <string name="st_size">Size</string>
+    <string name="st_no_description">No description.</string>
+    <string name="st_about_file">About file</string>
+    <string name="st_unknown">Unknown</string>
+    <string name="st_other_books">Other Books in the Series</string>
+    <string name="st_book_screen_title">Book</string>
+    <string name="st_show_all">Show all</string>
 </resources>

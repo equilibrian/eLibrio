@@ -3,10 +3,10 @@ package su.elibrio.mobile.utils
 import su.elibrio.mobile.model.LibraryFilter
 import su.elibrio.mobile.model.MainActivityScreens
 
-val MAIN_ACTIVITY_SCREENS = listOf(
+val BOTTOM_NAVIGATION_DESTINATIONS = listOf(
     MainActivityScreens.Library,
     MainActivityScreens.Authors,
-    MainActivityScreens.Settings
+    MainActivityScreens.Settings,
 )
 
 val LIBRARY_FILTERS = listOf(

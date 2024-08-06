@@ -21,4 +21,17 @@
     <string name="st_elibrio_version">eLibrio для Android v</string>
     <string name="st_licenses">Лицензии открытого ПО</string>
     <string name="title_activity_licenses">Лицензии открытого ПО</string>
+    <string name="st_sequence">Серия</string>
+    <string name="st_publisher">Издательство</string>
+    <string name="st_year">Год</string>
+    <string name="st_lang">Язык</string>
+    <string name="st_translator">Переводчик</string>
+    <string name="st_format">Формат</string>
+    <string name="st_size">Размер</string>
+    <string name="st_no_description">Описание отсутствует.</string>
+    <string name="st_about_file">Информация о файле</string>
+    <string name="st_unknown">Неизвестно</string>
+    <string name="st_other_books">Другие книги серии</string>
+    <string name="st_book_screen_title">Книга</string>
+    <string name="st_show_all">Показать все</string>
 </resources>

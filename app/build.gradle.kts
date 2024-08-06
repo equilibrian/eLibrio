@@ -9,9 +9,9 @@ plugins {
 }
 
 enum class Stage(private val suffix: String) {
-    ALPHA("-alpha"),
-    BETA("-beta"),
-    RELEASE("");
+    ALPHA("A"),
+    BETA("B"),
+    RELEASE("R");
 
     override fun toString(): String {
         return suffix
@@ -19,7 +19,7 @@ enum class Stage(private val suffix: String) {
 }
 
 val major = 0
-val minor = 7
+val minor = 10
 val patch = 0
 val stage = Stage.ALPHA
 
@@ -54,19 +54,7 @@ android {
                 variant.outputs
                     .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
                     .forEach { output ->
-                        val outputFileName = "eLibrio-${version}-release.apk"
-                        output.outputFileName = outputFileName
-                    }
-            }
-        }
-        debug {
-            applicationVariants.all {
-                val variant = this
-                variant.outputs
-                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-                    .forEach { output ->
-                        val outputFileName = "eLibrio-${version}-debug.apk"
-                        output.outputFileName = outputFileName
+                        output.outputFileName = "eLibrio-${version}.apk"
                     }
             }
         }
@@ -94,6 +82,8 @@ android {
 
 dependencies {
     implementation(libs.accompanist.permissions)
+
+    implementation(libs.coil.compose)
 
     implementation(libs.timber)
     implementation(libs.slf4j.api)

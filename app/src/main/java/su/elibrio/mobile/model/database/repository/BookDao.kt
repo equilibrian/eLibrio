@@ -1,11 +1,11 @@
 package su.elibrio.mobile.model.database.repository
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface BookDao {
@@ -13,7 +13,7 @@ interface BookDao {
     fun getAll(): List<Book>
 
     @Query("SELECT * FROM book WHERE id IN (:bookIds)")
-    fun loadAllByIds(bookIds: IntArray): LiveData<List<Book>>
+    fun loadAllByIds(bookIds: IntArray): List<Book>
 
     @Query("SELECT hash FROM book")
     fun getAllHashes(): List<String>
@@ -22,17 +22,23 @@ interface BookDao {
     fun findById(id: Int): Book
 
     @Query("SELECT * FROM book WHERE sequence LIKE :sequence")
-    fun findBySequence(sequence: String): LiveData<List<Book>>
+    fun findAllBySequence(sequence: String): List<Book>
+
+    @Query("SELECT * FROM book WHERE sequence LIKE :sequence AND id != :ignoreId")
+    fun findAllBySequence(sequence: String, ignoreId: Int): List<Book>
 
     @Query("SELECT * FROM book WHERE hash LIKE :hash")
-    fun findByHash(hash: String): LiveData<Book>
+    fun findByHash(hash: String): Book
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(vararg book: Book)
+    suspend fun insert(vararg book: Book)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(books: List<Book>)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateBook(bookI: Book)
+
     @Delete
-    fun delete(book: Book)
+    suspend fun delete(book: Book)
 }

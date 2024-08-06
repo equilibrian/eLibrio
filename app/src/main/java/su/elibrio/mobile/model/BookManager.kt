@@ -24,7 +24,7 @@ class BookManager {
          * @throws UnsupportedBookException If a book format does not supported.
          */
         @Throws(UnsupportedBookException::class)
-        fun createBook(file: File): Book {
+        suspend fun createBook(file: File): Book {
             val format = SupportedFormat.from(file)
 
             return when (format) {
@@ -39,7 +39,7 @@ class BookManager {
          * @param file The file to create the FictionBook from.
          * @return A `FictionBook` instance parsed from the file.
          */
-        private fun createFictionBook(file: File): Book = FictionBook.from(file)
+        private suspend fun createFictionBook(file: File): Book = FictionBook.from(file)
 
         /**
          * Scans the device for books and returns a list of found books.
@@ -77,7 +77,7 @@ class BookManager {
                     while (it.moveToNext()) srcs.add(it.getString(dataIdx))
                 }
 
-                Timber.d("${srcs.count()} books found")
+                Timber.d("${srcs.count()} files found")
 
                 srcs
             }
