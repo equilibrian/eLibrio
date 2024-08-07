@@ -229,7 +229,7 @@ fun BookCard(
                     contentPadding = PaddingValues(horizontal = 0.dp),
                     modifier = modifier.height(24.dp)
                 ) {
-                    Text(text = "Continue")
+                    Text(text = stringResource(id = R.string.st_read))
                     Icon(
                         imageVector = ImageVector
                             .vectorResource(id = R.drawable.ic_expand_right_small),
@@ -339,7 +339,7 @@ fun BookDetails(book: Book?) {
             }
         }
 
-        DetailItem(stringResource(R.string.st_sequence), book?.sequence)
+        DetailItem(stringResource(R.string.st_series), book?.sequence)
         DetailItem(stringResource(R.string.st_publisher), book?.publisher)
         DetailItem(stringResource(R.string.st_year), book?.year)
         DetailItem(stringResource(R.string.st_lang), book?.lang)
@@ -357,7 +357,6 @@ fun BookScreen(
     viewModel: BookScreenViewModel = hiltViewModel(),
     bookId: Int = 0
 ) {
-    val ctx = LocalContext.current
     if (bookId == -1) navController.popBackStack()
     val state = rememberLazyListState()
     val isTitleVisible by remember {

@@ -45,4 +45,7 @@
     <string name="st_show_more">Ещё</string>
     <string name="st_show_less">Свернуть</string>
     <string name="st_changes_saved">Изменения сохранены</string>
+    <string name="st_continue_reading">Продолжить чтение</string>
+    <string name="st_read">Читать</string>
+    <string name="st_series">Серия</string>
 </resources>

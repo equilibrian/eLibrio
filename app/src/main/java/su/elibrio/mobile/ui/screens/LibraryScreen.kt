@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -28,20 +29,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import su.elibrio.mobile.R
 import su.elibrio.mobile.model.database.repository.Book
 import su.elibrio.mobile.ui.components.Book
 import su.elibrio.mobile.ui.components.LibraryFilters
 import su.elibrio.mobile.ui.components.Loading
-import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.viewmodel.MainActivityViewModel
 
 @Composable
-fun CollectionView(
+fun Collection(
     modifier: Modifier = Modifier,
     state: LazyGridState,
     books: List<Book>?,
@@ -85,21 +86,17 @@ fun CollectionView(
 
 @Composable
 fun LibraryScreen(
-    modifier: Modifier = Modifier,
-    viewModel: MainActivityViewModel = hiltViewModel(),
-    navController: NavController
+    viewModel: MainActivityViewModel,
+    navController: NavController,
 ) {
-    val ctx = LocalContext.current
+    val contentGridState = rememberLazyGridState()
     val inProgress by viewModel.inProgress.observeAsState(false)
     val isFiltersVisible by viewModel.isFiltersVisible.observeAsState(true)
-    val books by viewModel.books.observeAsState(emptyList())
-
-    val contentGridState = rememberLazyGridState()
+    val books: List<Book>? by viewModel.books.observeAsState(emptyList())
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(),
+        modifier = Modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedVisibility(visible = isFiltersVisible) { LibraryFilters() }
@@ -115,17 +112,8 @@ fun LibraryScreen(
         ) { targetState ->
             when {
                 targetState -> Loading()
-                else -> CollectionView(books = books, state = contentGridState, navController = navController)
+                else -> Collection(books = books, state = contentGridState, navController = navController)
             }
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun CollectionScreenPreview() {
-    ELibrioTheme {
-        //LibraryScreen()
     }
 }
