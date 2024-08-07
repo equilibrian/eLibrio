@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import su.elibrio.mobile.utils.LIBRARY_FILTERS
 
 @Composable
-fun FiltersView() {
+fun LibraryFilters() {
     var selectedFilter by remember { mutableIntStateOf(0) }
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp)

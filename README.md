@@ -11,16 +11,21 @@
 
 eLibrio allows users to conveniently read e-books in various formats. The program is being developed to provide a simple and intuitive interface for reading and managing a library of books.
 
-## Supported formats
+## Format support
 
 | Format | Status      |
 |--------|-------------|
 | FB2    | In progress |
+| TXT    | Planned     |
 | MOBI   | Planned     |
 | EPUB   | Planned     |
 | PDF    | Planned     |
 | DjVu   | Planned     |
 
+### Other planned features
+
+- Text-to-speech, translation
+- Add bookmarks, notes
 
 ## License
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details.

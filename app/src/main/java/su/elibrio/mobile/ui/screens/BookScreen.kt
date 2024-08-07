@@ -1,7 +1,7 @@
 package su.elibrio.mobile.ui.screens
 
-import android.app.Activity
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -24,6 +24,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -37,9 +39,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,13 +63,38 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import su.elibrio.mobile.R
 import su.elibrio.mobile.model.database.repository.Book
-import su.elibrio.mobile.ui.components.BookView
-import su.elibrio.mobile.ui.components.MetricView
+import su.elibrio.mobile.ui.components.Book
+import su.elibrio.mobile.ui.components.Metric
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.viewmodel.BookScreenViewModel
 
 @Composable
-fun BookScreenAppBarActions(viewModel: BookScreenViewModel) {
+fun BookDropdownMenu(
+    navController: NavController,
+    isMenuExpanded: MutableState<Boolean>,
+    bookId: Int? = -1
+) {
+    val ctx = LocalContext.current
+    DropdownMenu(
+        expanded = isMenuExpanded.value,
+        onDismissRequest = { isMenuExpanded.value = false }
+    ) {
+        DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.st_edit)) },
+            onClick = { navController.navigate("edit/${bookId}") },
+        )
+
+        DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.st_move_to_trash)) },
+            onClick = {
+                Toast.makeText(ctx, "Not implemented", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+}
+
+@Composable
+fun BookScreenAppBarActions(navController: NavController, viewModel: BookScreenViewModel, isMenuExpanded: MutableState<Boolean>) {
     val isFavourite = viewModel.book.value?.isFavourite
     IconButton(
         onClick = { viewModel.updateFavourStatus(!(isFavourite ?: false)) }
@@ -75,8 +104,7 @@ fun BookScreenAppBarActions(viewModel: BookScreenViewModel) {
                 targetState == true -> {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_favorite_filled),
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.primary
+                        contentDescription = "Back"
                     )
                 }
                 else -> {
@@ -89,7 +117,8 @@ fun BookScreenAppBarActions(viewModel: BookScreenViewModel) {
         }
     }
 
-    IconButton(onClick = {}) {
+    BookDropdownMenu(navController = navController, isMenuExpanded = isMenuExpanded, bookId = viewModel.book.value?.id)
+    IconButton(onClick = { isMenuExpanded.value = !isMenuExpanded.value }) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.options_icon),
             contentDescription = "Options"
@@ -103,7 +132,8 @@ fun TopBar(
     isTitleVisible: Boolean,
     title: String,
     viewModel: BookScreenViewModel,
-    navController: NavController
+    navController: NavController,
+    isMenuExpanded: MutableState<Boolean>
 ) {
     val backgroundColor by animateColorAsState(
         if (isTitleVisible) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.background,
@@ -132,7 +162,13 @@ fun TopBar(
                 )
             }
         },
-        actions = { BookScreenAppBarActions(viewModel = viewModel) },
+        actions = {
+            BookScreenAppBarActions(
+                navController = navController,
+                viewModel = viewModel,
+                isMenuExpanded = isMenuExpanded
+            )
+        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = backgroundColor
         )
@@ -209,10 +245,10 @@ fun BookMetrics() {
             .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.Center
     ) {
-        MetricView(value = "0", text = "Pages")
-        MetricView(value = "0", text = "Chapters")
-        MetricView(value = "0", text = "Bookmarks")
-        MetricView(value = "0", text = "Quotes")
+        Metric(value = "0", text = "Pages")
+        Metric(value = "0", text = "Chapters")
+        Metric(value = "0", text = "Bookmarks")
+        Metric(value = "0", text = "Quotes")
     }
 
     HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp), thickness = 0.5.dp)
@@ -239,12 +275,11 @@ fun BooksSeries(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(164.dp)
-                .padding(horizontal = 12.dp),
+                .height(164.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -262,9 +297,12 @@ fun BooksSeries(
                 }
             }
 
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 books?.forEach { book ->
-                    item { BookView(navController = navController, book = book, showTitle = false) }
+                    item { Book(navController = navController, book = book, showTitle = false) }
                 }
             }
         }
@@ -312,7 +350,7 @@ fun BookScreen(
     bookId: Int = 0
 ) {
     val ctx = LocalContext.current
-    if (bookId == -1) (ctx as Activity).finish()
+    if (bookId == -1) navController.popBackStack()
     val state = rememberLazyListState()
     val isTitleVisible by remember {
         derivedStateOf { state.firstVisibleItemIndex != 0 }
@@ -324,6 +362,8 @@ fun BookScreen(
         viewModel.findBook(bookId)
     }
 
+    val isMenuExpanded = remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -331,7 +371,8 @@ fun BookScreen(
                 isTitleVisible = isTitleVisible,
                 title = book?.title ?: stringResource(R.string.st_unknown),
                 viewModel = viewModel,
-                navController = navController
+                navController = navController,
+                isMenuExpanded = isMenuExpanded
             )
         }
     ) { innerPaddings ->

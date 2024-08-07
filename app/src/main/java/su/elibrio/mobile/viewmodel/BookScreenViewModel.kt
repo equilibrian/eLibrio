@@ -58,4 +58,8 @@ class BookScreenViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
+        bookRepository.updateBook(book)
+    }
 }

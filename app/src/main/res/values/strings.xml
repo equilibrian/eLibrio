@@ -42,4 +42,12 @@
     <string name="st_other_books">Other Books in the Series</string>
     <string name="st_book_screen_title">Book</string>
     <string name="st_show_all">Show all</string>
+    <string name="st_details">Details</string>
+    <string name="st_move_to_trash">Move to trash</string>
+    <string name="st_edit">Edit</string>
+    <string name="st_title_edit">Edit</string>
+    <string name="st_title">Title</string>
+    <string name="st_author">Author</string>
+    <string name="st_annotation">Annotation</string>
+    <string name="st_save_changes">Save changes</string>
 </resources>

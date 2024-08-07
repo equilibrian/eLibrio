@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 
 @Composable
-fun MetricView(modifier: Modifier = Modifier, value: String = "---", text: String = "Label") {
+fun Metric(modifier: Modifier = Modifier, value: String = "---", text: String = "Label") {
     TextButton(onClick = {  }) {
         Column(
             modifier = modifier,
@@ -38,6 +38,6 @@ fun MetricView(modifier: Modifier = Modifier, value: String = "---", text: Strin
 @Composable
 fun MetricPreview() {
     ELibrioTheme {
-        MetricView()
+        Metric()
     }
 }

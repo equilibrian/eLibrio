@@ -68,14 +68,16 @@ import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import su.elibrio.mobile.model.MainActivityScreens
+import su.elibrio.mobile.model.Screen
 import su.elibrio.mobile.ui.screens.AuthorsScreen
 import su.elibrio.mobile.ui.screens.BookScreen
+import su.elibrio.mobile.ui.screens.EditScreen
 import su.elibrio.mobile.ui.screens.LibraryScreen
 import su.elibrio.mobile.ui.screens.SettingsScreen
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.utils.BOTTOM_NAVIGATION_DESTINATIONS
 import su.elibrio.mobile.viewmodel.MainActivityViewModel
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -94,7 +96,7 @@ class MainActivity : ComponentActivity() {
 fun AppBarActions(navController: NavController) {
     val currentDestination = navController.currentDestination?.route
     Row {
-        if (currentDestination != MainActivityScreens.Settings.route) {
+        if (currentDestination != Screen.Settings.route) {
             IconButton(onClick = {}) {
                 Icon(
                     painter = painterResource(R.drawable.search_icon),
@@ -103,8 +105,8 @@ fun AppBarActions(navController: NavController) {
             }
         }
 
-        if(currentDestination != MainActivityScreens.Authors.route
-            && currentDestination != MainActivityScreens.Settings.route
+        if(currentDestination != Screen.Authors.route
+            && currentDestination != Screen.Settings.route
         ) {
             IconButton(onClick = {
             }) {
@@ -121,7 +123,7 @@ fun AppBar(
     navController: NavController
 ) {
     val currentDestination =
-        MainActivityScreens.getDestinationByRoute(navController.currentDestination?.route)
+        Screen.getDestinationByRoute(navController.currentDestination?.route)
     TopAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = Color.Transparent,
@@ -195,19 +197,19 @@ fun setupNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainActivityScreens.Library.route
+        startDestination = Screen.Library.route
     ) {
-        composable(MainActivityScreens.Library.route) {
+        composable(Screen.Library.route) {
             LibraryScreen(navController = navController, viewModel = viewModel)
         }
-        composable(MainActivityScreens.Authors.route) {
+        composable(Screen.Authors.route) {
             AuthorsScreen()
         }
-        composable(MainActivityScreens.Settings.route) {
+        composable(Screen.Settings.route) {
             SettingsScreen()
         }
         composable(
-            route = MainActivityScreens.Book.route,
+            route = Screen.Book.route,
             arguments = listOf(navArgument("bookId") { type = NavType.IntType }),
             enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
             exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) }
@@ -215,6 +217,15 @@ fun setupNavHost(
             val bookId = backStackEntry.arguments?.getInt("bookId")
             if (bookId != null) {
                 BookScreen(navController = navController, bookId = bookId)
+            }
+        }
+        composable(
+            route = Screen.Edit.route,
+            arguments = listOf(navArgument("bookId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val bookId = backStackEntry.arguments?.getInt("bookId")
+            if (bookId != null) {
+                EditScreen(navController = navController, bookId = bookId)
             }
         }
     }
@@ -264,9 +275,12 @@ fun MainScreen(
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    when (navBackStackEntry?.destination?.route) {
-        MainActivityScreens.Book.route -> isNavigationVisible.value = false
-        else -> isNavigationVisible.value = true
+    when (Screen.getDestinationByRoute(navBackStackEntry?.destination?.route) in BOTTOM_NAVIGATION_DESTINATIONS) {
+        true -> isNavigationVisible.value = true
+        false -> {
+            isNavigationVisible.value = false
+            Timber.d("TRUE: ${navController.currentDestination?.route}")
+        }
     }
 
     val nestedScrollConnection = remember {

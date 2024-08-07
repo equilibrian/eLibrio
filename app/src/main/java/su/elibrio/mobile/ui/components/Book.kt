@@ -28,7 +28,7 @@ import su.elibrio.mobile.R
 import su.elibrio.mobile.model.database.repository.Book
 
 @Composable
-fun BookView(
+fun Book(
     navController: NavController,
     modifier: Modifier = Modifier,
     book: Book?,

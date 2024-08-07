@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingView(modifier: Modifier = Modifier) {
+fun Loading(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         LinearProgressIndicator(
             modifier = modifier

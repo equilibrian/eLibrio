@@ -34,9 +34,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import su.elibrio.mobile.R
 import su.elibrio.mobile.model.database.repository.Book
-import su.elibrio.mobile.ui.components.BookView
-import su.elibrio.mobile.ui.components.FiltersView
-import su.elibrio.mobile.ui.components.LoadingView
+import su.elibrio.mobile.ui.components.Book
+import su.elibrio.mobile.ui.components.LibraryFilters
+import su.elibrio.mobile.ui.components.Loading
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.viewmodel.MainActivityViewModel
 
@@ -58,7 +58,7 @@ fun CollectionView(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(books.size) { idx ->
-                BookView(book = books[idx], navController = navController)
+                Book(book = books[idx], navController = navController)
             }
         }
     } else {
@@ -102,7 +102,7 @@ fun LibraryScreen(
             .padding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AnimatedVisibility(visible = isFiltersVisible) { FiltersView() }
+        AnimatedVisibility(visible = isFiltersVisible) { LibraryFilters() }
 
         AnimatedContent(
             targetState = inProgress,
@@ -114,7 +114,7 @@ fun LibraryScreen(
             label = ""
         ) { targetState ->
             when {
-                targetState -> LoadingView()
+                targetState -> Loading()
                 else -> CollectionView(books = books, state = contentGridState, navController = navController)
             }
         }

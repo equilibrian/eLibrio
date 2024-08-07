@@ -34,4 +34,12 @@
     <string name="st_other_books">Другие книги серии</string>
     <string name="st_book_screen_title">Книга</string>
     <string name="st_show_all">Показать все</string>
+    <string name="st_details">Сведения</string>
+    <string name="st_move_to_trash">Переместить в корзину</string>
+    <string name="st_edit">Изменить</string>
+    <string name="st_title_edit">Изменение</string>
+    <string name="st_title">Название</string>
+    <string name="st_author">Автор</string>
+    <string name="st_annotation">Аннотация</string>
+    <string name="st_save_changes">Сохранить изменения</string>
 </resources>
