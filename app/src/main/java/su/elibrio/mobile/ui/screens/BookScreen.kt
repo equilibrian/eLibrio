@@ -5,9 +5,11 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
@@ -64,6 +67,7 @@ import coil.compose.AsyncImage
 import su.elibrio.mobile.R
 import su.elibrio.mobile.model.database.repository.Book
 import su.elibrio.mobile.ui.components.Book
+import su.elibrio.mobile.ui.components.ExpandableText
 import su.elibrio.mobile.ui.components.Metric
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.viewmodel.BookScreenViewModel
@@ -255,13 +259,15 @@ fun BookMetrics() {
 }
 
 @Composable
-fun BookAnnotation(annotation: String?) {
-    Text(
-        modifier = Modifier
-            .padding(horizontal = 12.dp),
+fun BookAnnotation(annotation: String?, isExpanded: MutableState<Boolean>) {
+    ExpandableText(
         text = if (annotation.isNullOrEmpty())
             stringResource(R.string.st_no_description)
         else annotation,
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .animateContentSize()
+            .clickable { isExpanded.value = !isExpanded.value },
         style = MaterialTheme.typography.bodyMedium
     )
 }
@@ -279,7 +285,9 @@ fun BooksSeries(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -363,6 +371,7 @@ fun BookScreen(
     }
 
     val isMenuExpanded = remember { mutableStateOf(false) }
+    val isAnnotationExpanded = remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -390,7 +399,7 @@ fun BookScreen(
                 )
             }
             item { BookMetrics() }
-            item { BookAnnotation(book?.annotation) }
+            item { BookAnnotation(annotation = book?.annotation, isExpanded = isAnnotationExpanded) }
             item { BooksSeries(navController = navController, books = otherBooks) }
             item { BookDetails(book = book) }
         }

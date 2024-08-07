@@ -22,10 +22,5 @@ eLibrio allows users to conveniently read e-books in various formats. The progra
 | PDF    | Planned     |
 | DjVu   | Planned     |
 
-### Other planned features
-
-- Text-to-speech, translation
-- Add bookmarks, notes
-
 ## License
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details.

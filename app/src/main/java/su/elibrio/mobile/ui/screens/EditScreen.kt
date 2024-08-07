@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -88,8 +89,15 @@ fun InputField(value: MutableState<String>, label: String, singleLine: Boolean =
 }
 
 @Composable
-fun EditForm(viewModel: BookScreenViewModel, paddingValues: PaddingValues, book: Book) {
+fun EditForm(
+    navController: NavController,
+    viewModel: BookScreenViewModel,
+    paddingValues: PaddingValues,
+    book: Book
+) {
     val ctx = LocalContext.current
+    val toastMessage = stringResource(id = R.string.st_changes_saved)
+
     val title = remember { mutableStateOf(book.title) }
     val author = remember { mutableStateOf(book.author ?: "") }
     val sequence = remember { mutableStateOf(book.sequence ?: "") }
@@ -115,6 +123,7 @@ fun EditForm(viewModel: BookScreenViewModel, paddingValues: PaddingValues, book:
                 model = book.coverPageSrc,
                 contentDescription = "Book cover page",
                 modifier = Modifier
+                    .fillMaxHeight()
                     .clip(RoundedCornerShape(12.dp))
                     .clickable {
                         Toast
@@ -127,7 +136,7 @@ fun EditForm(viewModel: BookScreenViewModel, paddingValues: PaddingValues, book:
                     },
                 placeholder = painterResource(id = R.drawable.no_cover),
                 error = painterResource(id = R.drawable.no_cover),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Fit
             )
 
             Column(
@@ -145,11 +154,15 @@ fun EditForm(viewModel: BookScreenViewModel, paddingValues: PaddingValues, book:
         InputField(value = annotation, label = stringResource(id = R.string.st_annotation), singleLine = false)
 
         Button(
-            onClick = { viewModel.updateBook(newBook) },
+            onClick = {
+                viewModel.updateBook(newBook)
+                Toast.makeText(ctx, toastMessage, Toast.LENGTH_SHORT).show()
+                navController.popBackStack()
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally),
             enabled = book != newBook
         ) {
-            Text(text = "Save changes")
+            Text(text = stringResource(id = R.string.st_save_changes))
         }
     }
 }
@@ -174,7 +187,12 @@ fun EditScreen(
         AnimatedContent(targetState = book != null, label = "") { targetState ->
             when {
                 targetState -> book?.let {
-                    EditForm(viewModel = viewModel, paddingValues = innerPaddings, book = it)
+                    EditForm(
+                        navController = navController,
+                        viewModel = viewModel,
+                        paddingValues = innerPaddings,
+                        book = it
+                    )
                 }
                 else -> Loading()
             }

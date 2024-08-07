@@ -42,4 +42,7 @@
     <string name="st_author">Author</string>
     <string name="st_annotation">Annotation</string>
     <string name="st_save_changes">Save changes</string>
+    <string name="st_show_more">Show more</string>
+    <string name="st_show_less">Show less</string>
+    <string name="st_changes_saved">Changes saved</string>
 </resources>

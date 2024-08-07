@@ -19,7 +19,7 @@ enum class Stage(private val suffix: String) {
 }
 
 val major = 0
-val minor = 11
+val minor = 12
 val patch = 0
 val stage = Stage.ALPHA
 
