@@ -16,6 +16,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        maven("https://dl.google.com/dl/android/maven2")
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
 

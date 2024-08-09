@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -19,21 +20,16 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import su.elibrio.mobile.R
 import su.elibrio.mobile.model.database.repository.Book
 import su.elibrio.mobile.ui.components.Book
@@ -48,37 +44,53 @@ fun Collection(
     books: List<Book>?,
     navController: NavController
 ) {
-    if (!books.isNullOrEmpty()) {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 114.dp),
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp),
-            state = state,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(books.size) { idx ->
-                Book(book = books[idx], navController = navController)
+    AnimatedContent(
+        targetState = !books.isNullOrEmpty(),
+        transitionSpec = {
+            fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
+        },
+        label = ""
+    ) { targetState ->
+        when {
+            targetState -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 114.dp),
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 12.dp),
+                    state = state,
+                    contentPadding = PaddingValues(vertical = 6.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(books!!.size) { idx ->
+                        Book(
+                            book = books[idx],
+                            navController = navController,
+                            showTitle = true
+                        )
+                    }
+                }
             }
-        }
-    } else {
-        Box(modifier = modifier.fillMaxSize()) {
-            Column(
-                modifier = modifier.align(Alignment.Center),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.book_open_icon),
-                    contentDescription = "book",
-                    modifier = modifier.align(Alignment.CenterHorizontally),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.outlineVariant)
-                )
+            else -> {
+                Box(modifier = modifier.fillMaxSize()) {
+                    Column(
+                        modifier = modifier.align(Alignment.Center),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.book_open_icon),
+                            contentDescription = "book",
+                            modifier = modifier.align(Alignment.CenterHorizontally),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.outlineVariant)
+                        )
 
-                Text(
-                    text = stringResource(id = R.string.nothing_to_show),
-                    color = MaterialTheme.colorScheme.outline
-                )
+                        Text(
+                            text = stringResource(id = R.string.nothing_to_show),
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+                }
             }
         }
     }
@@ -87,7 +99,7 @@ fun Collection(
 @Composable
 fun LibraryScreen(
     viewModel: MainActivityViewModel,
-    navController: NavController,
+    navController: NavController
 ) {
     val contentGridState = rememberLazyGridState()
     val inProgress by viewModel.inProgress.observeAsState(false)
@@ -104,9 +116,7 @@ fun LibraryScreen(
         AnimatedContent(
             targetState = inProgress,
             transitionSpec = {
-                fadeIn(
-                    animationSpec = tween(2000)
-                ) togetherWith fadeOut(animationSpec = tween(2000))
+                fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
             },
             label = ""
         ) { targetState ->

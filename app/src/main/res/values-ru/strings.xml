@@ -48,4 +48,8 @@
     <string name="st_continue_reading">Продолжить чтение</string>
     <string name="st_read">Читать</string>
     <string name="st_series">Серия</string>
+    <string name="st_pages_count">Страниц</string>
+    <string name="st_chapters_count">Глав</string>
+    <string name="st_bookmarks_count">Закладок</string>
+    <string name="st_notes_count">Заметок</string>
 </resources>

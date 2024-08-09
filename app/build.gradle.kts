@@ -19,7 +19,7 @@ enum class Stage(private val suffix: String) {
 }
 
 val major = 0
-val minor = 12
+val minor = 13
 val patch = 0
 val stage = Stage.ALPHA
 
@@ -60,18 +60,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "19"
     }
     buildFeatures {
         buildConfig = true
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -82,6 +82,7 @@ android {
 
 dependencies {
     implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.coil.compose)
 
@@ -94,14 +95,14 @@ dependencies {
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose.m3)
 
-    implementation(libs.accompanist.systemuicontroller)
-
     implementation(libs.androidx.room.runtime)
     kapt("androidx.room:room-compiler:2.6.1")
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.androidx.animation)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

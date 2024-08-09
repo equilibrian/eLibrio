@@ -12,21 +12,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import su.elibrio.mobile.ui.theme.ELibrioTheme
 
 @Composable
-fun Metric(modifier: Modifier = Modifier, value: String = "---", text: String = "Label") {
+fun Metric(label: String, value: String? = null) {
     TextButton(onClick = {  }) {
         Column(
-            modifier = modifier,
+            modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = value,
+                text = value.toString(),
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = text,
+                text = label,
                 color = MaterialTheme.colorScheme.outline,
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -38,6 +38,6 @@ fun Metric(modifier: Modifier = Modifier, value: String = "---", text: String = 
 @Composable
 fun MetricPreview() {
     ELibrioTheme {
-        Metric()
+        Metric("Label", null)
     }
 }

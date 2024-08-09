@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
@@ -34,13 +32,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ELibrioTheme {
-                setupNavHost()
+                SetupNavHost()
             }
         }
     }
 
     @Composable
-    fun setupNavHost(
+    fun SetupNavHost(
         navController: NavHostController = rememberNavController(),
         viewModel: MainActivityViewModel = hiltViewModel()
     ) {
@@ -51,6 +49,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        val args = listOf(navArgument("bookId") { type = NavType.IntType })
         NavHost(
             navController = navController,
             startDestination = Screen.Main.route
@@ -58,19 +57,13 @@ class MainActivity : ComponentActivity() {
             composable(Screen.Main.route) {
                 MainScreen(mainNavController = navController, viewModel = viewModel)
             }
-            composable(
-                route = Screen.Book.route,
-                arguments = listOf(navArgument("bookId") { type = NavType.IntType })
-            ) { backStackEntry ->
+            composable(route = Screen.Book.route, arguments = args) { backStackEntry ->
                 val bookId = backStackEntry.arguments?.getInt("bookId")
                 if (bookId != null) {
                     BookScreen(navController = navController, bookId = bookId)
                 }
             }
-            composable(
-                route = Screen.Edit.route,
-                arguments = listOf(navArgument("bookId") { type = NavType.IntType })
-            ) { backStackEntry ->
+            composable(route = Screen.Edit.route, arguments = args) { backStackEntry ->
                 val bookId = backStackEntry.arguments?.getInt("bookId")
                 if (bookId != null) {
                     EditScreen(navController = navController, bookId = bookId)

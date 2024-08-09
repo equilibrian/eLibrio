@@ -19,10 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -71,7 +68,7 @@ fun AppBar(
     currentScreen: Screen
 ) {
     TopAppBar(
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent
         ),
@@ -100,6 +97,7 @@ fun MainScreen(
     )
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -123,7 +121,10 @@ fun MainScreen(
                 modifier = Modifier.padding(innerPaddings)
             ) {
                 composable(Screen.Library.route) {
-                    LibraryScreen(navController = mainNavController, viewModel = viewModel)
+                    LibraryScreen(
+                        navController = mainNavController,
+                        viewModel = viewModel
+                    )
                 }
                 composable(Screen.Authors.route) { AuthorsScreen() }
                 composable(Screen.Settings.route) { SettingsScreen() }

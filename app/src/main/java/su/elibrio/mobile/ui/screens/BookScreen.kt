@@ -9,6 +9,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -35,6 +37,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -47,9 +50,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -58,70 +61,82 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import su.elibrio.mobile.R
-import su.elibrio.mobile.model.database.repository.Book
 import su.elibrio.mobile.ui.components.Book
 import su.elibrio.mobile.ui.components.ExpandableText
 import su.elibrio.mobile.ui.components.Metric
-import su.elibrio.mobile.ui.theme.ELibrioTheme
 import su.elibrio.mobile.viewmodel.BookScreenViewModel
+import su.elibrio.mobile.model.database.repository.Book as BookModel
 
 @Composable
 fun BookDropdownMenu(
     navController: NavController,
     isMenuExpanded: MutableState<Boolean>,
-    bookId: Int? = -1
+    bookId: Int
 ) {
     val ctx = LocalContext.current
-    DropdownMenu(
-        expanded = isMenuExpanded.value,
-        onDismissRequest = { isMenuExpanded.value = false }
-    ) {
-        DropdownMenuItem(
-            text = { Text(text = stringResource(id = R.string.st_edit)) },
-            onClick = { navController.navigate("edit/${bookId}") },
-        )
+    MaterialTheme(shapes = Shapes(MaterialTheme.shapes.medium)) {
+        DropdownMenu(
+            expanded = isMenuExpanded.value,
+            onDismissRequest = { isMenuExpanded.value = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = stringResource(id = R.string.st_edit)) },
+                onClick = {
+                    navController.navigate("edit/${bookId}")
+                    isMenuExpanded.value = false
+                }
+            )
 
-        DropdownMenuItem(
-            text = { Text(text = stringResource(id = R.string.st_move_to_trash)) },
-            onClick = {
-                Toast.makeText(ctx, "Not implemented", Toast.LENGTH_SHORT).show()
-            }
-        )
+            DropdownMenuItem(
+                text = { Text(text = stringResource(id = R.string.st_move_to_trash)) },
+                onClick = {
+                    Toast.makeText(ctx, "Not implemented", Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
     }
 }
 
 @Composable
-fun BookScreenAppBarActions(navController: NavController, viewModel: BookScreenViewModel, isMenuExpanded: MutableState<Boolean>) {
-    val isFavourite = viewModel.book.value?.isFavourite
+fun BookScreenAppBarActions(
+    navController: NavController,
+    viewModel: BookScreenViewModel,
+    isMenuExpanded: MutableState<Boolean>
+) {
+    val book = viewModel.book.value
+    val isFavourite = book?.isFavourite
     IconButton(
         onClick = { viewModel.updateFavourStatus(!(isFavourite ?: false)) }
     ) {
-        AnimatedContent(targetState = isFavourite, label = "") { targetState ->
-            when {
-                targetState == true -> {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_favorite_filled),
-                        contentDescription = "Back"
-                    )
-                }
-                else -> {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_favorite),
-                        contentDescription = "Back"
-                    )
-                }
+        AnimatedContent(
+            targetState = isFavourite,
+            transitionSpec = {
+                fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
+            },
+            label = ""
+        ) { targetState ->
+            val iconResource = if (targetState == true) {
+                R.drawable.ic_favorite_filled
+            } else {
+                R.drawable.ic_favorite
             }
+
+            Icon(
+                imageVector = ImageVector.vectorResource(id = iconResource),
+                contentDescription = "Favorite"
+            )
         }
     }
 
-    BookDropdownMenu(navController = navController, isMenuExpanded = isMenuExpanded, bookId = viewModel.book.value?.id)
+    book?.id?.let { id ->
+        BookDropdownMenu(navController = navController, isMenuExpanded = isMenuExpanded, bookId = id)
+    }
     IconButton(onClick = { isMenuExpanded.value = !isMenuExpanded.value }) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.options_icon),
@@ -185,12 +200,13 @@ fun BookCard(
     coverPageUri: Uri?,
     title: String,
     authorName: String,
-    progress: Float = 0f,
+    progress: Float = 0f
 ) {
     Card(modifier = modifier
         .fillMaxWidth()
         .requiredHeight(136.dp)
-        .padding(horizontal = 12.dp)) {
+        .padding(horizontal = 12.dp)
+    ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -242,20 +258,19 @@ fun BookCard(
 }
 
 @Composable
-fun BookMetrics() {
+fun BookMetrics(metrics: List<Pair<String, String?>>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.Center
     ) {
-        Metric(value = "0", text = "Pages")
-        Metric(value = "0", text = "Chapters")
-        Metric(value = "0", text = "Bookmarks")
-        Metric(value = "0", text = "Quotes")
+        metrics.forEach { metric ->
+            Metric(label = metric.first, value = metric.second)
+        }
     }
 
-    HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp), thickness = 0.5.dp)
+    HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), thickness = 0.5.dp)
 }
 
 @Composable
@@ -273,11 +288,12 @@ fun BookAnnotation(annotation: String?, isExpanded: MutableState<Boolean>) {
 }
 
 @Composable
-fun BooksSeries(
-    books: List<Book>?,
-    navController: NavController
-) {
-    AnimatedVisibility(visible = !books.isNullOrEmpty()) {
+fun BooksSeries(books: List<BookModel>?, navController: NavController) {
+    AnimatedVisibility(
+        visible = !books.isNullOrEmpty(),
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -309,8 +325,14 @@ fun BooksSeries(
                 contentPadding = PaddingValues(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                books?.forEach { book ->
-                    item { Book(navController = navController, book = book, showTitle = false) }
+                books?.size?.let {
+                    items(it) { idx ->
+                        Book(
+                            book = books[idx],
+                            navController = navController,
+                            showTitle = false
+                        )
+                    }
                 }
             }
         }
@@ -318,9 +340,9 @@ fun BooksSeries(
 }
 
 @Composable
-fun BookDetails(book: Book?) {
+fun BookDetails(book: BookModel?) {
     Column(
-        modifier = Modifier.padding(horizontal = 12.dp),
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
@@ -353,7 +375,6 @@ fun BookDetails(book: Book?) {
 @Composable
 fun BookScreen(
     navController: NavController,
-    modifier: Modifier = Modifier,
     viewModel: BookScreenViewModel = hiltViewModel(),
     bookId: Int = 0
 ) {
@@ -369,11 +390,16 @@ fun BookScreen(
         viewModel.findBook(bookId)
     }
 
+    val metrics: MutableList<Pair<String, String?>> = mutableListOf()
+    metrics.add(Pair(stringResource(id = R.string.st_pages_count), null))
+    metrics.add(Pair(stringResource(id = R.string.st_chapters_count), null))
+    metrics.add(Pair(stringResource(id = R.string.st_bookmarks_count), null))
+    metrics.add(Pair(stringResource(id = R.string.st_notes_count), null))
+
     val isMenuExpanded = remember { mutableStateOf(false) }
     val isAnnotationExpanded = remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = modifier,
         topBar = {
             TopBar(
                 isTitleVisible = isTitleVisible,
@@ -385,7 +411,7 @@ fun BookScreen(
         }
     ) { innerPaddings ->
         LazyColumn(
-            modifier = modifier.padding(innerPaddings),
+            modifier = Modifier.padding(innerPaddings),
             state = state,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -397,18 +423,10 @@ fun BookScreen(
                     progress = 0f
                 )
             }
-            item { BookMetrics() }
+            item { BookMetrics(metrics) }
             item { BookAnnotation(annotation = book?.annotation, isExpanded = isAnnotationExpanded) }
             item { BooksSeries(navController = navController, books = otherBooks) }
             item { BookDetails(book = book) }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BookScreenPreview() {
-    ELibrioTheme {
-        //BookScreen()
     }
 }

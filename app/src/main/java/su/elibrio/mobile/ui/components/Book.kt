@@ -30,19 +30,17 @@ import su.elibrio.mobile.model.database.repository.Book
 @Composable
 fun Book(
     navController: NavController,
-    modifier: Modifier = Modifier,
-    book: Book?,
+    book: Book,
     showTitle: Boolean = true,
-    aspectRatio: Float = 0.75f
+    aspectRatio: Float = 0.7f
 ) {
     val ctx = LocalContext.current
-
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate("book/${book?.id}")
+                navController.navigate("book/${book.id}")
             }
     ) {
         Card(
@@ -55,7 +53,7 @@ fun Book(
                 .build()
 
             AsyncImage(
-                model = book?.coverPageSrc,
+                model = book.coverPageSrc,
                 contentDescription = null,
                 imageLoader = imageLoader,
                 modifier = Modifier
@@ -70,7 +68,7 @@ fun Book(
 
         if (showTitle) {
             Text(
-                text = book!!.title,
+                text = book.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp),
